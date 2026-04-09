@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evening Check-in - SleepTech</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script>window.API_BASE_URL = 'YOUR_VERCEL_APP'</script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">🌙</div>
+      <h1>Evening Check-in</h1>
+      <p class="subtitle">How was your day?</p>
+    </header>
+
+    <div class="card">
+      <form id="eveningForm">
+        <div class="form-group">
+          <label>Had caffeine today?</label>
+          <div class="toggle-group">
+            <div class="toggle-option">
+              <input type="radio" name="caffeine" id="caff_yes" value="yes">
+              <label for="caff_yes">Yes</label>
+            </div>
+            <div class="toggle-option">
+              <input type="radio" name="caffeine" id="caff_no" value="no" checked>
+              <label for="caff_no">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Exercised today?</label>
+          <div class="toggle-group">
+            <div class="toggle-option">
+              <input type="radio" name="exercise" id="exer_yes" value="yes">
+              <label for="exer_yes">Yes</label>
+            </div>
+            <div class="toggle-option">
+              <input type="radio" name="exercise" id="exer_no" value="no" checked>
+              <label for="exer_no">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Napped today?</label>
+          <div class="toggle-group">
+            <div class="toggle-option">
+              <input type="radio" name="nap" id="nap_yes" value="yes">
+              <label for="nap_yes">Yes</label>
+            </div>
+            <div class="toggle-option">
+              <input type="radio" name="nap" id="nap_no" value="no" checked>
+              <label for="nap_no">No</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="stress_or_condition">Stress or conditions</label>
+          <input type="text" id="stress_or_condition" placeholder="Any stress, illness, or factors affecting sleep?">
+        </div>
+
+        <div class="form-group">
+          <label for="expected_bedtime">Expected bedtime</label>
+          <input type="time" id="expected_bedtime">
+        </div>
+
+        <div class="form-group">
+          <label for="memo">Notes (optional)</label>
+          <textarea id="memo" placeholder="How are you feeling tonight?"></textarea>
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">Save Evening Log</button>
+      </form>
+
+      <div id="message" class="message"></div>
+    </div>
+
+    <div class="nav-links">
+      <a href="index.html">🏠 Home</a>
+      <a href="morning.html">☀️ Morning</a>
+    </div>
+  </div>
+
+  <footer>
+    <p>Data stored in your private GitHub repo</p>
+  </footer>
+
+  <script src="assets/app.js"></script>
+</body>
+</html>

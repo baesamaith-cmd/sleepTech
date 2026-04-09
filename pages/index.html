@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SleepTech - Sleep Tracker</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <script>window.API_BASE_URL = 'YOUR_VERCEL_APP'</script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">🌙</div>
+      <h1>SleepTech</h1>
+      <p class="subtitle">Simple sleep tracking for better rest</p>
+    </header>
+
+    <div class="card">
+      <div class="time-display" id="currentTime"></div>
+      <p style="text-align: center; color: var(--text-secondary);" id="currentDate"></p>
+    </div>
+
+    <div class="quick-stats">
+      <div class="stat-card">
+        <div class="stat-value">--</div>
+        <div class="stat-label">Avg Sleep</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">--</div>
+        <div class="stat-label">Avg Quality</div>
+      </div>
+    </div>
+
+    <div class="nav-links">
+      <a href="morning.html">☀️ Morning</a>
+      <a href="evening.html">🌙 Evening</a>
+    </div>
+
+    <div id="message" class="message"></div>
+  </div>
+
+  <footer>
+    <p>Your data stays private in your own repo.</p>
+    <p style="margin-top: 8px; font-size: 0.75rem;">Not medical advice • No diagnosis</p>
+  </footer>
+
+  <script>
+    function updateTime() {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      const dateStr = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+      document.getElementById('currentTime').textContent = timeStr;
+      document.getElementById('currentDate').textContent = dateStr;
+    }
+    updateTime();
+    setInterval(updateTime, 1000);
+  </script>
+</body>
+</html>
