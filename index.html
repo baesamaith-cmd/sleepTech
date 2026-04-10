@@ -1,54 +1,84 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ko">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SleepTech - Sleep Tracker</title>
+  <title>Nod Sleep Check-in</title>
   <link rel="stylesheet" href="assets/styles.css">
   <script>window.API_BASE_URL = 'https://sleep-tech-five.vercel.app'</script>
 </head>
 <body>
   <div class="container">
-    <header>
-      <div class="logo">🌙</div>
-      <h1>SleepTech</h1>
-      <p class="subtitle">Simple sleep tracking for better rest</p>
+    <header class="hero">
+      <div class="hero-badge">🌙 Nod</div>
+      <h1>수면과 하루 리듬을<br>가볍게 기록해보세요.</h1>
+      <p class="subtitle">아침과 저녁, 짧은 체크인만으로 내 수면 패턴과 컨디션 흐름을 쌓아갑니다.</p>
     </header>
 
-    <div class="card">
+    <section class="card card-accent">
+      <p class="eyebrow">오늘 리듬</p>
       <div class="time-display" id="currentTime"></div>
-      <p style="text-align: center; color: var(--text-secondary);" id="currentDate"></p>
-    </div>
+      <p class="center-text" id="currentDate"></p>
+      <p class="helper-text">기록은 private GitHub repo에 저장되고, 나중에 OpenClaw가 주간 요약으로 읽을 수 있어요.</p>
+    </section>
 
-    <div class="quick-stats">
+    <section class="card">
+      <p class="eyebrow">오늘 해야 할 일</p>
+      <ul class="check-list">
+        <li>☀️ 아침에는 수면 시간, 기상 시간, 수면 질을 기록하기</li>
+        <li>🌙 저녁에는 카페인, 운동, 낮잠, 취침 예정 시간을 남기기</li>
+        <li>📊 일주일치가 쌓이면 패턴을 요약해서 보기</li>
+      </ul>
+    </section>
+
+    <section class="quick-stats">
       <div class="stat-card">
-        <div class="stat-value">--</div>
-        <div class="stat-label">Avg Sleep</div>
+        <div class="stat-label">아침 체크인</div>
+        <div class="stat-value">5분 이내</div>
+        <div class="stat-caption">잠깐 기록으로 끝</div>
       </div>
       <div class="stat-card">
-        <div class="stat-value">--</div>
-        <div class="stat-label">Avg Quality</div>
+        <div class="stat-label">저녁 체크인</div>
+        <div class="stat-value">3분 이내</div>
+        <div class="stat-caption">하루 요인만 정리</div>
       </div>
-    </div>
+    </section>
 
-    <div class="nav-links">
-      <a href="morning.html">☀️ Morning</a>
-      <a href="evening.html">🌙 Evening</a>
-    </div>
+    <section class="card">
+      <p class="eyebrow">기록하러 가기</p>
+      <div class="stack-actions">
+        <a class="action-card" href="morning.html">
+          <span class="action-emoji">☀️</span>
+          <span>
+            <strong>아침 기록</strong>
+            <small>어젯밤 수면과 오늘 아침 상태 남기기</small>
+          </span>
+        </a>
+        <a class="action-card" href="evening.html">
+          <span class="action-emoji">🌙</span>
+          <span>
+            <strong>저녁 기록</strong>
+            <small>오늘의 습관과 취침 전 상태 남기기</small>
+          </span>
+        </a>
+      </div>
+    </section>
 
-    <div id="message" class="message"></div>
+    <section class="card muted-card">
+      <p class="eyebrow">입력 방식</p>
+      <p class="helper-text">지금은 폼 입력 MVP로 시작합니다. 이후 문장 입력, 음성 입력, 메시지 기반 입력으로 확장할 수 있어요.</p>
+    </section>
   </div>
 
   <footer>
-    <p>Your data stays private in your own repo.</p>
-    <p style="margin-top: 8px; font-size: 0.75rem;">Not medical advice • No diagnosis</p>
+    <p>이 서비스는 웰니스 기록용입니다. 의료 진단이나 치료 판단을 제공하지 않습니다.</p>
   </footer>
 
   <script>
     function updateTime() {
       const now = new Date();
-      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      const dateStr = now.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
+      const timeStr = now.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' });
+      const dateStr = now.toLocaleDateString('ko-KR', { weekday: 'long', month: 'long', day: 'numeric' });
       document.getElementById('currentTime').textContent = timeStr;
       document.getElementById('currentDate').textContent = dateStr;
     }

@@ -21,6 +21,79 @@ function getDateKey() {
   return now.toISOString().split('T')[0];
 }
 
+async function loadPreviousSummary(target) {
+  const card = document.getElementById('previousSummaryCard');
+  const text = document.getElementById('previousSummaryText');
+  if (!card || !text || !target) return;
+
+  try {
+    const response = await fetch(`${API_BASE}/api/latest-summary?for=${target}`);
+    if (!response.ok) return;
+    const result = await response.json();
+    if (!result?.found || !result?.summary) return;
+    text.textContent = result.summary;
+    card.classList.remove('is-hidden');
+  } catch {
+    // keep summary hidden on failure
+  }
+}
+
+function setupVoiceInputs() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const voiceButtons = document.querySelectorAll('[data-voice-target]');
+
+  if (!voiceButtons.length) return;
+
+  if (!SpeechRecognition) {
+    voiceButtons.forEach((btn) => {
+      btn.disabled = true;
+      btn.textContent = '🎤 브라우저 미지원';
+      btn.title = '이 브라우저에서는 음성 입력을 지원하지 않아요.';
+    });
+    return;
+  }
+
+  voiceButtons.forEach((btn) => {
+    const targetId = btn.dataset.voiceTarget;
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'ko-KR';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => {
+      btn.classList.add('is-recording');
+      btn.textContent = '⏺️ 듣는 중';
+    };
+
+    recognition.onend = () => {
+      btn.classList.remove('is-recording');
+      btn.textContent = '🎤 음성으로 입력';
+    };
+
+    recognition.onerror = () => {
+      showMessage('error', '음성 입력을 처리하지 못했어요. 다시 시도하거나 직접 입력해 주세요.');
+    };
+
+    recognition.onresult = (event) => {
+      const transcript = event.results?.[0]?.[0]?.transcript?.trim();
+      if (!transcript) return;
+      target.value = target.value ? `${target.value} ${transcript}` : transcript;
+      showMessage('success', '음성 내용을 메모에 넣었어요. 저장 전에 한 번 확인해 주세요.');
+    };
+
+    btn.addEventListener('click', () => {
+      try {
+        recognition.start();
+      } catch {
+        showMessage('error', '음성 입력 시작에 실패했어요. 잠시 후 다시 시도해 주세요.');
+      }
+    });
+  });
+}
+
 async function submitForm(data, idleLabel) {
   const submitBtn = document.getElementById('submitBtn');
   if (submitBtn) {
@@ -54,8 +127,11 @@ async function submitForm(data, idleLabel) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  setupVoiceInputs();
+
   const morningForm = document.getElementById('morningForm');
   if (morningForm) {
+    loadPreviousSummary('morning');
     morningForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -77,6 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const eveningForm = document.getElementById('eveningForm');
   if (eveningForm) {
+    loadPreviousSummary('evening');
     eveningForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
