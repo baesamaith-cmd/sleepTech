@@ -38,6 +38,43 @@ async function loadPreviousSummary(target) {
   }
 }
 
+async function loadBedtimeRecommendation() {
+  const card = document.getElementById('bedtimeRecommendationCard');
+  if (!card) return;
+
+  const caffeine = document.querySelector('input[name="caffeine"]:checked')?.value === 'yes';
+  const exercise = document.querySelector('input[name="exercise"]:checked')?.value === 'yes';
+  const nap = document.querySelector('input[name="nap"]:checked')?.value === 'yes';
+  const stress = document.getElementById('stress_or_condition')?.value.trim() || '';
+
+  const params = new URLSearchParams();
+  if (caffeine) params.append('caffeine', 'true');
+  if (exercise) params.append('exercise', 'true');
+  if (nap) params.append('nap', 'true');
+  if (stress) params.append('stress', stress);
+
+  try {
+    const response = await fetch(`${API_BASE}/api/bedtime-recommendation?${params.toString()}`);
+    if (!response.ok) return;
+    const result = await response.json();
+    if (!result?.recommended_bedtime_start) return;
+
+    const timeEl = document.getElementById('recommendationTime');
+    const reasonEl = document.getElementById('recommendationReason');
+    const tipEl = document.getElementById('recommendationTip');
+    const noteEl = document.getElementById('recommendationNote');
+
+    if (timeEl) timeEl.textContent = `${result.recommended_bedtime_start} ~ ${result.recommended_bedtime_end}`;
+    if (reasonEl) reasonEl.textContent = result.bedtime_reason;
+    if (tipEl) tipEl.textContent = result.bedtime_tip;
+    if (noteEl) noteEl.textContent = result.confidence_note;
+
+    card.classList.remove('is-hidden');
+  } catch {
+    // keep card hidden on failure
+  }
+}
+
 function setupVoiceInputs() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   const voiceButtons = document.querySelectorAll('[data-voice-target]');
@@ -154,6 +191,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const eveningForm = document.getElementById('eveningForm');
   if (eveningForm) {
     loadPreviousSummary('evening');
+    loadBedtimeRecommendation();
+
+    const inputsToWatch = eveningForm.querySelectorAll('input[name="caffeine"], input[name="exercise"], input[name="nap"], #stress_or_condition');
+    inputsToWatch.forEach(input => {
+      input.addEventListener('change', loadBedtimeRecommendation);
+      if (input.type === 'text') {
+        input.addEventListener('input', loadBedtimeRecommendation);
+      }
+    });
+
     eveningForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -169,7 +216,7 @@ document.addEventListener('DOMContentLoaded', () => {
         submitted_at: new Date().toISOString()
       };
 
-      const ok = await submitForm(data, 'Save Evening Log');
+      const ok = await submitForm(data, '저녁 기록 저장하기');
       if (ok) eveningForm.reset();
     });
   }
