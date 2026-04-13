@@ -40,6 +40,7 @@ async function loadPreviousSummary(target) {
 
 async function loadBedtimeRecommendation() {
   const card = document.getElementById('bedtimeRecommendationCard');
+  const infoCard = document.getElementById('bedtimeInfoCard');
   if (!card) return;
 
   const caffeine = document.querySelector('input[name="caffeine"]:checked')?.value === 'yes';
@@ -57,19 +58,25 @@ async function loadBedtimeRecommendation() {
     const response = await fetch(`${API_BASE}/api/bedtime-recommendation?${params.toString()}`);
     if (!response.ok) return;
     const result = await response.json();
-    if (!result?.recommended_bedtime_start) return;
 
-    const timeEl = document.getElementById('recommendationTime');
-    const reasonEl = document.getElementById('recommendationReason');
-    const tipEl = document.getElementById('recommendationTip');
-    const noteEl = document.getElementById('recommendationNote');
+    if (result.show_recommendation && result.recommended_bedtime_start) {
+      const timeEl = document.getElementById('recommendationTime');
+      const reasonEl = document.getElementById('recommendationReason');
+      const uncertaintyEl = document.getElementById('recommendationUncertainty');
 
-    if (timeEl) timeEl.textContent = `${result.recommended_bedtime_start} ~ ${result.recommended_bedtime_end}`;
-    if (reasonEl) reasonEl.textContent = result.bedtime_reason;
-    if (tipEl) tipEl.textContent = result.bedtime_tip;
-    if (noteEl) noteEl.textContent = result.confidence_note;
+      if (timeEl) timeEl.textContent = `${result.recommended_bedtime_start} ~ ${result.recommended_bedtime_end}`;
+      if (reasonEl) reasonEl.textContent = result.bedtime_reason;
+      if (uncertaintyEl && result.uncertainty_note) {
+        uncertaintyEl.textContent = result.uncertainty_note;
+        uncertaintyEl.style.display = 'block';
+      }
 
-    card.classList.remove('is-hidden');
+      card.classList.remove('is-hidden');
+    } else if (result.info_message) {
+      const infoMsgEl = document.getElementById('bedtimeInfoMessage');
+      if (infoMsgEl) infoMsgEl.textContent = result.info_message;
+      if (infoCard) infoCard.classList.remove('is-hidden');
+    }
   } catch {
     // keep card hidden on failure
   }

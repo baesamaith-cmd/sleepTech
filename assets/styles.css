@@ -397,6 +397,17 @@ textarea {
   background: linear-gradient(180deg, rgba(42, 52, 98, 0.92), rgba(20, 26, 49, 0.94));
 }
 
+.info-card {
+  border-style: dashed;
+  border-color: var(--text-secondary);
+}
+
+.info-message {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
 .recommendation-time {
   font-size: 2rem;
   font-weight: 800;

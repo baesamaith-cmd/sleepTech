@@ -37,16 +37,18 @@ function parseTime(timeStr) {
 }
 
 function calculateBedtimeRecommendation(yesterdayMorning, todayEvening) {
-  const TARGET_WAKE_HOUR = 7;
-  const TARGET_WAKE_MINUTE = 0;
-  const TARGET_SLEEP_DURATION_HOURS = 7.5;
+  let baseBedtimeMinutes = 23.5 * 60;
+  let hasValidWakeTime = false;
 
-  let baseBedtimeMinutes = (TARGET_WAKE_HOUR * 60 + TARGET_WAKE_MINUTE) - (TARGET_SLEEP_DURATION_HOURS * 60);
-  if (baseBedtimeMinutes < 0) baseBedtimeMinutes += 24 * 60;
+  if (yesterdayMorning?.wake_time) {
+    const wakeMins = parseTime(yesterdayMorning.wake_time);
+    baseBedtimeMinutes = wakeMins - (7.5 * 60);
+    if (baseBedtimeMinutes < 0) baseBedtimeMinutes += 24 * 60;
+    hasValidWakeTime = true;
+  }
 
   let adjustmentMinutes = 0;
   let reason = '';
-  let tip = '';
 
   if (yesterdayMorning) {
     const quality = yesterdayMorning.sleep_quality || 3;
@@ -61,54 +63,43 @@ function calculateBedtimeRecommendation(yesterdayMorning, todayEvening) {
         : (24 * 60 - sleepMins) + wakeMins;
     }
 
-    const isPoorSleep = quality <= 2 || awakenings >= 2 || sleepDurationMinutes < 6 * 60;
-
-    if (isPoorSleep) {
-      if (quality <= 2) {
-        adjustmentMinutes = -30;
-        reason = '어제 수면 질이 낮아 충분히 쉬어주는 것이 좋겠습니다';
-        tip = '컨디션에 따라 조기 취침도 괜찮아요';
-      } else if (awakenings >= 2) {
-        adjustmentMinutes = -30;
-        reason = '어제 각성이 잦았으니 더 일찍 쉬는 것이 도움됩니다';
-        tip = '오늘은 충분히 휴식해 보세요';
-      } else if (sleepDurationMinutes < 6 * 60) {
-        adjustmentMinutes = -15;
-        reason = '어제 수면 시간이 짧았으니 충분히 취침해 보세요';
-        tip = '오늘은 일찍 쉬는 것을 추천드려요';
-      }
-    }
-
-    if (reason === '' && yesterdayMorning.sleep_time) {
-      const avgSleep = 7.5 * 60;
-      if (sleepDurationMinutes < avgSleep - 30) {
-        adjustmentMinutes = -15;
-        reason = '최근 수면 시간이 다소 부족합니다';
-        tip = '조금 더 일찍 취침해 보세요';
-      }
+    if (quality <= 2 || awakenings >= 2) {
+      adjustmentMinutes = -30;
+      reason = '어제 컨디션이 조금 아쉬웠네요. 충분히 쉬는 것이 도움돼요';
+    } else if (sleepDurationMinutes > 0 && sleepDurationMinutes < 6 * 60) {
+      adjustmentMinutes = -15;
+      reason = '어제 수면 시간이 부족했으니 오늘은 일찍 쉬어보세요';
+    } else if (sleepDurationMinutes > 0 && sleepDurationMinutes < 7 * 60) {
+      adjustmentMinutes = -15;
+      reason = '최근 수면이 조금 부족했던 것 같아요';
     }
   }
 
-  if (todayEvening) {
+  if (todayEvening && !reason) {
     const hadNap = todayEvening.nap;
     const hadCaffeine = todayEvening.caffeine;
 
-    if ((hadNap || hadCaffeine) && adjustmentMinutes >= -15) {
-      adjustmentMinutes += 15;
-      if (!reason) {
-        reason = hadNap && hadCaffeine 
-          ? '낮잠과 카페인 섭취로 인해 조금 늦어져도 괜찮아요'
-          : hadNap 
-            ? '낮잠을 쉬셨으니 조금 늦어도 괜찮아요'
-            : '카페인 섭취가 있으므로 조금 늦춰도 됩니다';
-        tip = '컨디션을 보면서 조금씩 조정해도 괜찮아요';
+    if (hadNap || hadCaffeine) {
+      if (adjustmentMinutes <= -15) {
+        adjustmentMinutes += 15;
+        if (adjustmentMinutes > -15) adjustmentMinutes = -15;
+      } else {
+        adjustmentMinutes = 15;
       }
+      reason = hadNap && hadCaffeine 
+        ? '낮잠과 카페인 섭취로 인해 조금 늦어도 괜찮아요'
+        : hadNap 
+          ? '낮잠을 쉬셨으니 조금 늦어도 괜찮아요'
+          : '카페인 섭취가 있어서 조금 늦춰도 돼요';
     }
   }
 
   if (reason === '') {
-    reason = '최근 기록을 기준으로한 초기 추천입니다';
-    tip = '컨디션에 따라 조정해도 괜찮아요';
+    if (hasValidWakeTime) {
+      reason = '어제 기상 시간을 기준으로 추천드려요';
+    } else {
+      reason = '평소 패턴을 바탕으로 추천드려요';
+    }
   }
 
   const finalBedtimeStartMinutes = baseBedtimeMinutes + adjustmentMinutes;
@@ -122,9 +113,7 @@ function calculateBedtimeRecommendation(yesterdayMorning, todayEvening) {
   return {
     recommended_bedtime_start: formatTime(startH, startM),
     recommended_bedtime_end: formatTime(endH, endM),
-    bedtime_reason: reason,
-    bedtime_tip: tip,
-    confidence_note: '추천은 최근 기록을 기반으로 합니다'
+    bedtime_reason: reason
   };
 }
 
@@ -164,14 +153,19 @@ export default async function handler(req, res) {
       yesterdayMorning = decoded?.entries?.morning || null;
     }
 
+    const hasYesterdayMorning = !!yesterdayMorning;
     const recommendation = calculateBedtimeRecommendation(yesterdayMorning, todayEveningFromQuery);
+    const uncertaintyNote = '매일 컨디션에 따라 달라질 수 있어요.';
 
     return res.status(200).json({
       found: !!yesterdayMorning,
       date: today,
       yesterday_date: yesterday,
       has_evening_inputs: !!todayEveningFromQuery,
-      ...recommendation
+      show_recommendation: hasYesterdayMorning,
+      info_message: hasYesterdayMorning ? null : '취침 추천을 받으려면 조금 더 많은 기록이 필요해요. 오늘도 잊지 않고 기록해 보세요.',
+      ...recommendation,
+      uncertainty_note: hasYesterdayMorning ? uncertaintyNote : null
     });
   } catch (error) {
     console.error('Bedtime recommendation error:', error);
