@@ -38,6 +38,48 @@ async function loadPreviousSummary(target) {
   }
 }
 
+async function loadPatternInsights() {
+  const coachingCard = document.getElementById('patternInsightsCard');
+  const buildingCard = document.getElementById('patternBuildingCard');
+  if (!coachingCard && !buildingCard) return;
+
+  try {
+    const response = await fetch(`${API_BASE}/api/pattern-insights`);
+    if (!response.ok) return;
+    const result = await response.json();
+
+    if (result.status === 'building') {
+      if (buildingCard) {
+        const insightEl = document.getElementById('buildingInsight');
+        const recEl = document.getElementById('buildingRecommendation');
+
+        if (insightEl) insightEl.textContent = result.insight;
+        if (recEl) recEl.textContent = result.today_action;
+
+        buildingCard.classList.remove('is-hidden');
+      }
+    } else if (result.status === 'ready') {
+      if (coachingCard) {
+        const headlineEl = document.getElementById('coachingHeadline');
+        const insightEl = document.getElementById('coachingInsight');
+        const recEl = document.getElementById('coachingRecommendation');
+        const actionEl = document.getElementById('coachingAction');
+        const confEl = document.getElementById('coachingConfidence');
+
+        if (headlineEl) headlineEl.textContent = result.headline;
+        if (insightEl) insightEl.textContent = result.insight;
+        if (recEl) recEl.textContent = result.recommendation;
+        if (actionEl) actionEl.textContent = result.today_action;
+        if (confEl) confEl.textContent = result.confidence_note;
+
+        coachingCard.classList.remove('is-hidden');
+      }
+    }
+  } catch {
+    // keep cards hidden on failure
+  }
+}
+
 async function loadBedtimeRecommendation() {
   const card = document.getElementById('bedtimeRecommendationCard');
   const infoCard = document.getElementById('bedtimeInfoCard');
@@ -174,6 +216,10 @@ async function submitForm(data, idleLabel) {
 
 document.addEventListener('DOMContentLoaded', () => {
   setupVoiceInputs();
+
+  if (document.getElementById('patternInsightsCard') || document.getElementById('patternBuildingCard')) {
+    loadPatternInsights();
+  }
 
   const morningForm = document.getElementById('morningForm');
   if (morningForm) {

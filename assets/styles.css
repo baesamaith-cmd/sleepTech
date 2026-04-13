@@ -445,6 +445,69 @@ textarea {
   font-size: 0.96rem;
 }
 
+.coaching-card {
+  border: 1px solid rgba(139, 143, 255, 0.32);
+  background: linear-gradient(180deg, rgba(42, 52, 98, 0.92), rgba(20, 26, 49, 0.94));
+}
+
+.coaching-headline {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--accent-strong);
+  margin-bottom: 10px;
+}
+
+.coaching-insight {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  margin-bottom: 12px;
+}
+
+.coaching-recommendation {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.coaching-action {
+  background: rgba(103, 217, 164, 0.1);
+  border: 1px solid rgba(103, 217, 164, 0.24);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  color: var(--success);
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+}
+
+.coaching-confidence {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.building-card {
+  border-style: dashed;
+  border-color: var(--text-secondary);
+}
+
+.building-message {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin-bottom: 10px;
+}
+
+.building-action {
+  color: var(--text-primary);
+  font-size: 0.9rem;
+  margin-bottom: 8px;
+}
+
+.building-note {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
 .is-hidden {
   display: none;
 }
