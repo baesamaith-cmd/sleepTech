@@ -10,9 +10,9 @@
 <body class="theme-morning">
   <div class="container">
     <header class="hero compact-hero">
-      <div class="hero-badge">☀️ Morning</div>
-      <h1>오늘 아침 상태를<br>짧게 남겨볼까요?</h1>
-      <p class="subtitle">수면 시간, 기상 시간, 수면 질만 적어도 충분히 좋은 시작이에요.</p>
+      <div class="hero-badge">☀️ 아침 기록</div>
+      <h1>어젯밤 수면은<br>어떻게 되었나요?</h1>
+      <p class="subtitle">아침 30초, 시간 두 개와 수면 질만 선택하면 충분해요.</p>
     </header>
 
     <section class="card summary-card is-hidden" id="previousSummaryCard">
@@ -23,56 +23,59 @@
     <section class="card">
       <form id="morningForm">
         <div class="form-group">
-          <label for="sleep_time">어젯밤 잠든 시각</label>
+          <label for="sleep_time">어젯밤 잠든 시간</label>
           <input type="time" id="sleep_time" required>
         </div>
 
         <div class="form-group">
-          <label for="wake_time">오늘 일어난 시각</label>
+          <label for="wake_time">오늘 일어난 시간</label>
           <input type="time" id="wake_time" required>
         </div>
 
-        <div class="form-group">
-          <label>오늘 느끼는 수면 질</label>
+        <div class="form-group compact-rating">
+          <label>오늘 수면 질</label>
           <div class="rating-group">
             <div class="rating-option">
               <input type="radio" name="sleep_quality" id="sq1" value="1">
-              <label for="sq1">😴<span>많이 아쉬움</span></label>
+              <label for="sq1">😴</label>
             </div>
             <div class="rating-option">
               <input type="radio" name="sleep_quality" id="sq2" value="2">
-              <label for="sq2">😐<span>조금 아쉬움</span></label>
+              <label for="sq2">😐</label>
             </div>
             <div class="rating-option">
               <input type="radio" name="sleep_quality" id="sq3" value="3" checked>
-              <label for="sq3">🙂<span>보통</span></label>
+              <label for="sq3">🙂</label>
             </div>
             <div class="rating-option">
               <input type="radio" name="sleep_quality" id="sq4" value="4">
-              <label for="sq4">😊<span>괜찮음</span></label>
+              <label for="sq4">😊</label>
             </div>
             <div class="rating-option">
               <input type="radio" name="sleep_quality" id="sq5" value="5">
-              <label for="sq5">😁<span>아주 좋음</span></label>
+              <label for="sq5">😁</label>
             </div>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="awakenings">중간에 깬 횟수</label>
-          <input type="number" id="awakenings" min="0" max="20" value="0">
-        </div>
+        <button type="submit" class="btn" id="submitBtn">저장하기</button>
 
-        <div class="form-group">
-          <div class="label-row">
-            <label for="memo">메모</label>
-            <button type="button" class="voice-btn" data-voice-target="memo">🎤 음성으로 입력</button>
-          </div>
-          <textarea id="memo" placeholder="예: 새벽에 한 번 깨서 다시 잠들기까지 조금 걸렸어요."></textarea>
-          <p class="field-note">지원되는 브라우저에서는 음성을 텍스트로 옮겨 메모칸에 넣어줘요.</p>
+        <div class="optional-section">
+          <details>
+            <summary>+ 메모 남기기 (선택)</summary>
+            <div class="form-group">
+              <label for="awakenings">자고 깬 횟수</label>
+              <input type="number" id="awakenings" min="0" max="20" value="0">
+            </div>
+            <div class="form-group">
+              <div class="label-row">
+                <label for="memo">메모</label>
+                <button type="button" class="voice-btn" data-voice-target="memo">🎤</button>
+              </div>
+              <textarea id="memo" placeholder="기억나는 대로"></textarea>
+            </div>
+          </details>
         </div>
-
-        <button type="submit" class="btn" id="submitBtn">아침 기록 저장하기</button>
       </form>
 
       <div id="message" class="message"></div>
@@ -80,7 +83,7 @@
 
     <section class="card muted-card">
       <p class="eyebrow">기록 팁</p>
-      <p class="helper-text">완벽하게 적지 않아도 괜찮아요. 흐름을 남기는 게 더 중요해요.</p>
+      <p class="helper-text">완벽하게 적지 않아도 돼요. 흐름을 남기는 게 더 중요해요.</p>
     </section>
 
     <div class="nav-links">
@@ -90,7 +93,7 @@
   </div>
 
   <footer>
-    <p>기록은 private 저장소에 보관되고, 나중에 주간 리포트로 요약할 수 있어요.</p>
+    <p>이 기록은 웰니스 루틴 정리를 위한 것이며, 의료적 판단을 대신하지 않습니다.</p>
   </footer>
 
   <script src="assets/app.js"></script>

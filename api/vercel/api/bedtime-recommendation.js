@@ -110,10 +110,21 @@ function calculateBedtimeRecommendation(yesterdayMorning, todayEvening) {
   const endH = Math.floor(((finalBedtimeEndMinutes % (24 * 60)) + (24 * 60)) % (24 * 60) / 60);
   const endM = ((finalBedtimeEndMinutes % (24 * 60)) + (24 * 60)) % (24 * 60) % 60;
 
+  const tips = [
+    '자는 30분 전에 화면을 멀리 해보세요.',
+    '오늘은 가볍게 스트레칭이나 숨심으로 마무리해 보세요.',
+    '완전히 어둡게 만들고 시계를 확인하지 마세요.',
+    '조용한 음악이나 자연소리와 함께 휴식을 취해 보세요.',
+    '온수를 마시거나 가볍게 샤워하면 수면에 좋아요.'
+  ];
+
+  const tipIndex = Math.floor(Math.random() * tips.length);
+
   return {
     recommended_bedtime_start: formatTime(startH, startM),
     recommended_bedtime_end: formatTime(endH, endM),
-    bedtime_reason: reason
+    bedtime_reason: reason,
+    bedtime_tip: tips[tipIndex]
   };
 }
 
@@ -164,7 +175,10 @@ export default async function handler(req, res) {
       has_evening_inputs: !!todayEveningFromQuery,
       show_recommendation: hasYesterdayMorning,
       info_message: hasYesterdayMorning ? null : '취침 추천을 받으려면 조금 더 많은 기록이 필요해요. 오늘도 잊지 않고 기록해 보세요.',
-      ...recommendation,
+      recommended_bedtime_start: recommendation.recommended_bedtime_start,
+      recommended_bedtime_end: recommendation.recommended_bedtime_end,
+      bedtime_reason: recommendation.bedtime_reason,
+      bedtime_tip: hasYesterdayMorning ? recommendation.bedtime_tip : null,
       uncertainty_note: hasYesterdayMorning ? uncertaintyNote : null
     });
   } catch (error) {

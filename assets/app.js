@@ -62,10 +62,12 @@ async function loadBedtimeRecommendation() {
     if (result.show_recommendation && result.recommended_bedtime_start) {
       const timeEl = document.getElementById('recommendationTime');
       const reasonEl = document.getElementById('recommendationReason');
+      const tipEl = document.getElementById('recommendationTip');
       const uncertaintyEl = document.getElementById('recommendationUncertainty');
 
       if (timeEl) timeEl.textContent = `${result.recommended_bedtime_start} ~ ${result.recommended_bedtime_end}`;
       if (reasonEl) reasonEl.textContent = result.bedtime_reason;
+      if (tipEl && result.bedtime_tip) tipEl.textContent = result.bedtime_tip;
       if (uncertaintyEl && result.uncertainty_note) {
         uncertaintyEl.textContent = result.uncertainty_note;
         uncertaintyEl.style.display = 'block';
@@ -114,7 +116,7 @@ function setupVoiceInputs() {
 
     recognition.onend = () => {
       btn.classList.remove('is-recording');
-      btn.textContent = '🎤 음성으로 입력';
+      btn.textContent = '🎤';
     };
 
     recognition.onerror = () => {
@@ -142,7 +144,7 @@ async function submitForm(data, idleLabel) {
   const submitBtn = document.getElementById('submitBtn');
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
+    submitBtn.textContent = '저장 중...';
   }
 
   try {
@@ -154,13 +156,13 @@ async function submitForm(data, idleLabel) {
 
     const result = await response.json();
     if (!response.ok) {
-      throw new Error(result.error || 'Submission failed');
+      throw new Error(result.error || '제출 실패');
     }
 
-    showMessage('success', result.message || 'Submitted successfully!');
+    showMessage('success', result.message || '저장 완료!');
     return true;
   } catch (err) {
-    showMessage('error', err.message || 'Failed to submit. Please try again.');
+    showMessage('error', err.message || '저장에 실패했어요. 다시 시도해 주세요.');
     return false;
   } finally {
     if (submitBtn) {
@@ -190,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         submitted_at: new Date().toISOString()
       };
 
-      const ok = await submitForm(data, 'Save Morning Log');
+      const ok = await submitForm(data, '저장하기');
       if (ok) morningForm.reset();
     });
   }
