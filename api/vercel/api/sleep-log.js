@@ -1,27 +1,55 @@
-// Vercel Function - Sleep Log API
-// Stores sleep data in private GitHub repo via Contents API
+function isTime(value) {
+  return /^\d{2}:\d{2}$/.test(value || '');
+}
+
+function validateScale(value, field) {
+  return Number.isInteger(value) && value >= 1 && value <= 5 ? null : `${field} must be an integer between 1 and 5`;
+}
 
 function validateMorning(data) {
   const errors = [];
-  if (!/^\d{2}:\d{2}$/.test(data.sleep_time || '')) errors.push('sleep_time must be HH:MM');
-  if (!/^\d{2}:\d{2}$/.test(data.wake_time || '')) errors.push('wake_time must be HH:MM');
-  if (!Number.isInteger(data.sleep_quality) || data.sleep_quality < 1 || data.sleep_quality > 5) {
-    errors.push('sleep_quality must be an integer between 1 and 5');
+  for (const field of ['time_in_bed', 'lights_out_time', 'final_wake_time', 'out_of_bed_time']) {
+    if (!isTime(data[field])) errors.push(`${field} must be HH:MM`);
   }
-  if (!Number.isInteger(data.awakenings) || data.awakenings < 0) {
-    errors.push('awakenings must be a non-negative integer');
+
+  for (const field of ['sleep_onset_latency', 'awakenings', 'total_awake_time']) {
+    if (!Number.isInteger(data[field]) || data[field] < 0) errors.push(`${field} must be a non-negative integer`);
   }
+
+  if (typeof data.estimated_total_sleep_time !== 'number' || data.estimated_total_sleep_time < 0) {
+    errors.push('estimated_total_sleep_time must be a non-negative number');
+  }
+
+  ['sleep_quality', 'morning_energy', 'daytime_sleepiness'].forEach((field) => {
+    const error = validateScale(data[field], field);
+    if (error) errors.push(error);
+  });
+
   return errors;
 }
 
 function validateEvening(data) {
   const errors = [];
-  for (const field of ['caffeine', 'exercise', 'nap']) {
+  for (const field of ['caffeine', 'alcohol', 'nap', 'exercise']) {
     if (typeof data[field] !== 'boolean') errors.push(`${field} must be boolean`);
   }
-  if (data.expected_bedtime && !/^\d{2}:\d{2}$/.test(data.expected_bedtime)) {
+
+  if (data.expected_bedtime && !isTime(data.expected_bedtime)) {
     errors.push('expected_bedtime must be HH:MM');
   }
+
+  if (!['none', 'light', 'moderate', 'high'].includes(data.caffeine_amount || '')) {
+    errors.push('caffeine_amount must be none, light, moderate, or high');
+  }
+
+  if (!['none', 'light', 'moderate', 'high'].includes(data.alcohol_amount || '')) {
+    errors.push('alcohol_amount must be none, light, moderate, or high');
+  }
+
+  if (!Number.isInteger(data.nap_duration) || data.nap_duration < 0) {
+    errors.push('nap_duration must be a non-negative integer');
+  }
+
   return errors;
 }
 
@@ -43,11 +71,11 @@ async function getExistingFile(owner, repo, path, token) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader("Access-Control-Allow-Origin", "https://baesamaith-cmd.github.io");
-  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader('Access-Control-Allow-Origin', 'https://baesamaith-cmd.github.io');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-  if (req.method === "OPTIONS") return res.status(200).end();
+  if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }

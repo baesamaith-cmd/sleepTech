@@ -3,82 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Evening Check-in - SleepTech</title>
+  <title>Evening Sleep Diary - SleepTech</title>
   <link rel="stylesheet" href="assets/styles.css">
   <script>window.API_BASE_URL = 'https://sleep-tech-five.vercel.app'</script>
 </head>
 <body>
   <div class="container">
-    <header>
+    <header class="page-header">
       <div class="logo">🌙</div>
-      <h1>Evening Check-in</h1>
-      <p class="subtitle">How was your day?</p>
+      <h1>Evening sleep diary</h1>
+      <p class="subtitle">Log daytime factors and plan your night with a CBT-I lens.</p>
     </header>
 
-    <div class="card">
+    <section class="card recommendation-card is-hidden" id="recommendationCard">
+      <p class="eyebrow">Bedtime recommendation</p>
+      <div class="time-display" id="bedtimeWindow">--:-- ~ --:--</div>
+      <p class="recommendation-reason" id="bedtimeReason"></p>
+      <p class="recommendation-tip" id="bedtimeTip"></p>
+      <p class="helper-text" id="confidenceNote"></p>
+    </section>
+
+    <section class="card">
       <form id="eveningForm">
-        <div class="form-group">
-          <label>Had caffeine today?</label>
-          <div class="toggle-group">
-            <div class="toggle-option">
-              <input type="radio" name="caffeine" id="caff_yes" value="yes">
-              <label for="caff_yes">Yes</label>
+        <div class="field-grid two-up">
+          <div class="form-group">
+            <label for="diary_date">Date</label>
+            <input type="date" id="diary_date" required>
+          </div>
+          <div class="form-group">
+            <label for="expected_bedtime">Planned bedtime</label>
+            <input type="time" id="expected_bedtime">
+          </div>
+        </div>
+
+        <div class="field-grid three-up">
+          <div class="form-group">
+            <label for="caffeine_amount">Caffeine</label>
+            <select id="caffeine_amount">
+              <option value="none">None</option>
+              <option value="light">Light</option>
+              <option value="moderate">Moderate</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="alcohol_amount">Alcohol</label>
+            <select id="alcohol_amount">
+              <option value="none">None</option>
+              <option value="light">Light</option>
+              <option value="moderate">Moderate</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="nap_duration">Nap duration (minutes)</label>
+            <input type="number" id="nap_duration" min="0" max="300" value="0">
+          </div>
+        </div>
+
+        <div class="field-grid two-up">
+          <div class="form-group">
+            <label>Exercised today?</label>
+            <div class="toggle-group">
+              <div class="toggle-option"><input type="radio" name="exercise" id="exercise_yes" value="yes"><label for="exercise_yes">Yes</label></div>
+              <div class="toggle-option"><input type="radio" name="exercise" id="exercise_no" value="no" checked><label for="exercise_no">No</label></div>
             </div>
-            <div class="toggle-option">
-              <input type="radio" name="caffeine" id="caff_no" value="no" checked>
-              <label for="caff_no">No</label>
-            </div>
+          </div>
+          <div class="form-group">
+            <label for="stress_or_condition">Stress or conditions</label>
+            <input type="text" id="stress_or_condition" placeholder="Travel, illness, work stress, pain, or anything else">
           </div>
         </div>
 
         <div class="form-group">
-          <label>Exercised today?</label>
-          <div class="toggle-group">
-            <div class="toggle-option">
-              <input type="radio" name="exercise" id="exer_yes" value="yes">
-              <label for="exer_yes">Yes</label>
-            </div>
-            <div class="toggle-option">
-              <input type="radio" name="exercise" id="exer_no" value="no" checked>
-              <label for="exer_no">No</label>
-            </div>
-          </div>
+          <label for="memo">Notes</label>
+          <textarea id="memo" placeholder="What might affect tonight’s sleep?"></textarea>
         </div>
 
-        <div class="form-group">
-          <label>Napped today?</label>
-          <div class="toggle-group">
-            <div class="toggle-option">
-              <input type="radio" name="nap" id="nap_yes" value="yes">
-              <label for="nap_yes">Yes</label>
-            </div>
-            <div class="toggle-option">
-              <input type="radio" name="nap" id="nap_no" value="no" checked>
-              <label for="nap_no">No</label>
-            </div>
-          </div>
-        </div>
+        <section class="compact-card guidance-card">
+          <p class="eyebrow">Tonight’s reminder</p>
+          <ul class="check-list">
+            <li>Go to bed when sleepy, not just because the clock says so.</li>
+            <li>If you get stuck awake, do a brief reset outside bed and return when sleepy.</li>
+            <li>Protect tomorrow’s wake time more than tonight’s perfect sleep.</li>
+          </ul>
+        </section>
 
-        <div class="form-group">
-          <label for="stress_or_condition">Stress or conditions</label>
-          <input type="text" id="stress_or_condition" placeholder="Any stress, illness, or factors affecting sleep?">
-        </div>
-
-        <div class="form-group">
-          <label for="expected_bedtime">Expected bedtime</label>
-          <input type="time" id="expected_bedtime">
-        </div>
-
-        <div class="form-group">
-          <label for="memo">Notes (optional)</label>
-          <textarea id="memo" placeholder="How are you feeling tonight?"></textarea>
-        </div>
-
-        <button type="submit" class="btn" id="submitBtn">Save Evening Log</button>
+        <button type="submit" class="btn" id="submitBtn">Save evening diary</button>
       </form>
-
       <div id="message" class="message"></div>
-    </div>
+    </section>
 
     <div class="nav-links">
       <a href="index.html">🏠 Home</a>
@@ -87,7 +101,7 @@
   </div>
 
   <footer>
-    <p>Data stored in your private GitHub repo</p>
+    <p>Use the diary to notice patterns, not to grade yourself.</p>
   </footer>
 
   <script src="assets/app.js"></script>
