@@ -209,66 +209,86 @@ function generateCoaching(analysis) {
   const recommendations = [];
   let todayAction = '';
   let confidenceScore = 'low';
+  const recentDays = recordCount >= 3 && recordCount < 7 ? '최근 기록 기준' : '최근';
+  const recordLabel = recordCount >= 7 ? '최근 기록을 종합해 보면' : `${recentDays} 보면`;
   
   if (bedtimeStd !== null && bedtimeStd > 45) {
-    insights.push('취침 시간이 매일 달라지고 있어요.');
+    const prefix = recordCount >= 3 && recordCount < 7 ? '최근 3일 기록 기준으로' : '';
+    insights.push(`${prefix} 취침 시간이 매일 많이 달라지고 있어요.`.replace(/^\s+/, ''));
     recommendations.push('취침 시간을 정해진 범위(1시간 이내)로 맞추면 수면 질이 개선될 수 있어요.');
     todayAction = '오늘 정한 취침 시간에 맞춰 스마트폰을 끄고 침대에 누워보세요.';
-    confidenceScore = 'medium';
+    confidenceScore = recordCount >= 7 ? 'medium-high' : 'medium';
   }
   
-  if (avgBedtimeMins !== null && avgBedtimeMins > 23 * 60 || (avgBedtimeMins !== null && avgBedtimeMins < 6 * 60)) {
+  if (avgBedtimeMins !== null && (avgBedtimeMins > 23 * 60 || avgBedtimeMins < 6 * 60)) {
     const bedtimeStr = formatBedtime(avgBedtimeMins);
     if (avgQuality !== null && avgQuality < 3) {
-      insights.push(`평균 취침 시간이 ${bedtimeStr} 정도로 다소 늦고, 수면 질도 낮아요.`);
+      const prefix = recordCount >= 3 && recordCount < 7 ? '최근 기록 기준으로는' : '';
+      insights.push(`${prefix} 평균 취침 시간이 ${bedtimeStr} 정도로 다소 늦고, 수면 질도 낮아요.`.replace(/^\s+/, ''));
       recommendations.push('취침 시간을 조금 앞당기면 컨디션이 더 나아질 수 있어요.');
       if (!todayAction) todayAction = '오늘은 평소보다 30분 일찍 잠을 들어가는 것을 목표로 해보세요.';
-      confidenceScore = 'medium';
+      confidenceScore = recordCount >= 7 ? 'medium-high' : 'medium';
     }
   }
   
   if (avgDuration !== null && avgDuration < 6.5 * 60) {
-    insights.push(`평균 수면 시간이 ${Math.round(avgDuration / 60 * 10) / 10}시간으로 조금 부족해요.`);
+    const prefix = recordCount >= 3 && recordCount < 7 ? '최근 며칠은' : '';
+    insights.push(`${prefix} 평균 수면 시간이 ${Math.round(avgDuration / 60 * 10) / 10}시간으로 조금 부족해요.`.replace(/^\s+/, ''));
     recommendations.push('수면 시간이 부족하면 낮에 피로감이 누적될 수 있어요.');
     if (!todayAction) todayAction = '오늘은 충분히 자는 것을 최우선으로 해보세요.';
-    if (confidenceScore === 'low') confidenceScore = 'medium';
+    if (confidenceScore === 'low') confidenceScore = recordCount >= 7 ? 'medium-high' : 'medium';
   }
   
   if (qualityCaffeineCorr < -0.5 && caffeineDayCount >= 2) {
-    insights.push('카페인 섭취 후 수면 질이 낮아지는 경향이 보여요.');
+    const prefix = recordCount >= 3 && recordCount < 7 ? '최근 기록 기준으로는' : '';
+    insights.push(`${prefix} 카페인 섭취 후 수면 질이 낮아지는 경향이 보여요.`.replace(/^\s+/, ''));
     recommendations.push('카페인 섭취 후 충분히 시간이 지난 후 잠을 드는 것이 좋을 수 있어요.');
     if (!todayAction) todayAction = '오늘 저녁에는 카페인 음료를 피하고, 가능하다면 오후 3시 이후는 카페인 제품을 멀리해 보세요.';
-    confidenceScore = 'medium';
+    confidenceScore = recordCount >= 7 ? 'medium-high' : 'medium';
   }
   
   if (bedtimeCaffeineCorr > 30 && caffeineDayCount >= 2) {
-    insights.push('카페인 섭취일이 그렇지 않은 날보다 취침 시간이 늦어지는 경향이 있어요.');
+    const prefix = recordCount >= 3 && recordCount < 7 ? '최근 기록 기준으로는' : '';
+    insights.push(`${prefix} 카페인 섭취일이 그렇지 않은 날보다 취침 시간이 조금 밀리는 편이에요.`.replace(/^\s+/, ''));
     recommendations.push('카페인 섭취 시간을 더 일찍 조정하면 취침 시간을 안정시킬 수 있어요.');
-    if (confidenceScore === 'low') confidenceScore = 'medium';
+    if (confidenceScore === 'low') confidenceScore = recordCount >= 7 ? 'medium-high' : 'medium';
   }
   
   if (qualityNapCorr < -0.5 && napDayCount >= 2) {
-    insights.push('낮잠을 잔 날에 수면 질이 낮아지는 경향이 보여요.');
+    const prefix = recordCount >= 3 && recordCount < 7 ? '최근 기록을 보면' : '';
+    insights.push(`${prefix} 낮잠을 잔 날에 수면 질이 낮아지는 경향이 보여요.`.replace(/^\s+/, ''));
     recommendations.push('낮잠 시간을 짧게(30분 이내)하거나 너무 늦게 자지 않으면 도움이 될 수 있어요.');
-    confidenceScore = 'medium';
+    confidenceScore = recordCount >= 7 ? 'medium-high' : 'medium';
   }
   
   if (bedtimeNapCorr > 30 && napDayCount >= 2) {
-    insights.push('낮잠을 잔 날이 그렇지 않은 날보다 취침 시간이 늦어지는 경향이 있어요.');
+    const prefix = recordCount >= 3 && recordCount < 7 ? '최근 기록을 보면' : '';
+    insights.push(`${prefix} 낮잠을 잔 날이 그렇지 않은 날보다 취침 시간이 늦어지는 경향이 있어요.`.replace(/^\s+/, ''));
     recommendations.push('낮잠을 일찍 마치면 밤 취침 시간에 영향을 덜 줘요.');
-    confidenceScore = 'medium';
+    confidenceScore = recordCount >= 7 ? 'medium-high' : 'medium';
   }
   
   if (insights.length === 0) {
     insights.push('최근 기록을 보면 전반적으로 수면 패턴이 안정적인 편이에요.');
     recommendations.push('현재 루틴을 그대로 유지하면서 가끔 변화를 주는 것도 좋을 수 있어요.');
     todayAction = '오늘도 아침, 저녁 기록을 차근차근 남겨보세요.';
-    confidenceScore = 'high';
+    confidenceScore = recordCount >= 7 ? 'high' : 'medium';
   }
   
   const headline = insights.length > 0 
     ? insights[0].replace(/.$/, '요.')
     : '안정적인 수면 패턴';
+  
+  let confidenceNote;
+  if (recordCount >= 7) {
+    confidenceNote = confidenceScore === 'high'
+      ? '데이터가 충분해서 더 확실한 조언이에요.'
+      : '데이터를 종합해보니 이런 흐름이 보여요.';
+  } else {
+    confidenceNote = confidenceScore === 'medium-high'
+      ? '일부 데이터에서 패턴이 보여요.'
+      : '데이터가 좀 더 쌓이면 더 정확한 조언이 가능할 거예요.';
+  }
   
   return {
     status: 'ready',
@@ -276,11 +296,7 @@ function generateCoaching(analysis) {
     insight: insights.join(' '),
     recommendation: recommendations.join(' '),
     today_action: todayAction || '오늘도 기록을 이어 가세요.',
-    confidence_note: confidenceScore === 'high' 
-      ? '데이터가 충분해서 더 확실한 조언이에요.' 
-      : confidenceScore === 'medium' 
-        ? '일부 데이터에서 패턴이 보여요.'
-        : '데이터가 좀 더 쌓이면 더 정확한 조언이 가능할 거예요.',
+    confidence_note: confidenceNote,
     record_count: recordCount,
     avg_bedtime: formatBedtime(avgBedtimeMins),
     avg_duration_hours: avgDuration ? Math.round(avgDuration / 60 * 10) / 10 : null,
