@@ -2,6 +2,10 @@ function isTime(value) {
   return /^\d{2}:\d{2}$/.test(value || '');
 }
 
+function isBlank(value) {
+  return value === undefined || value === null || value === '';
+}
+
 function validateScale(value, field) {
   return Number.isInteger(value) && value >= 1 && value <= 5 ? null : `${field} must be an integer between 1 and 5`;
 }
@@ -9,7 +13,7 @@ function validateScale(value, field) {
 function validateMorning(data) {
   const errors = [];
   for (const field of ['time_in_bed', 'lights_out_time', 'final_wake_time', 'out_of_bed_time']) {
-    if (!isTime(data[field])) errors.push(`${field} must be HH:MM`);
+    if (!isBlank(data[field]) && !isTime(data[field])) errors.push(`${field} must be HH:MM`);
   }
 
   for (const field of ['sleep_onset_latency', 'awakenings', 'total_awake_time']) {

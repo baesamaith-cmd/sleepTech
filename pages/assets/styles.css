@@ -76,7 +76,8 @@ h3 {
 footer,
 .check-list li,
 ol,
-.action-card span {
+.action-card span,
+.summary-feedback {
   color: var(--text-secondary);
 }
 
@@ -94,8 +95,13 @@ ol,
   padding: 18px 20px;
 }
 
-.hero-card {
+.hero-card,
+.coaching-card {
   background: linear-gradient(180deg, rgba(42, 52, 98, 0.95), rgba(20, 26, 49, 0.96));
+}
+
+.compact-hero {
+  padding-bottom: 18px;
 }
 
 .caution-card {
@@ -134,11 +140,16 @@ ol,
   margin: 14px 0;
 }
 
+.compact-pillars div {
+  min-height: 100%;
+}
+
 .pillars-grid div,
 .stat-card,
 .action-card,
 .plan-card,
-.trend-row {
+.trend-row,
+.summary-feedback {
   background: rgba(18, 24, 46, 0.9);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -198,7 +209,8 @@ ol,
 }
 
 .trend-row,
-.plan-card {
+.plan-card,
+.summary-feedback {
   padding: 14px 16px;
 }
 
@@ -303,6 +315,39 @@ select:focus {
 .toggle-option input:checked + label {
   background: linear-gradient(180deg, rgba(100, 110, 220, 0.32), rgba(70, 78, 170, 0.34));
   border-color: rgba(166, 168, 255, 0.42);
+}
+
+.details-card {
+  margin: 2px 0 18px;
+  padding: 16px;
+  background: rgba(15, 20, 38, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-lg);
+}
+
+.details-card summary {
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--text-primary);
+  list-style: none;
+}
+
+.details-card summary::-webkit-details-marker {
+  display: none;
+}
+
+.details-card summary::after {
+  content: '+';
+  float: right;
+  color: var(--accent-strong);
+}
+
+.details-card[open] summary::after {
+  content: '−';
+}
+
+.details-helper {
+  margin: 10px 0 14px;
 }
 
 .btn {

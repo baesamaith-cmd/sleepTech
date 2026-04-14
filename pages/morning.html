@@ -12,12 +12,12 @@
     <header class="page-header">
       <div class="logo">☀️</div>
       <h1>Morning sleep diary</h1>
-      <p class="subtitle">Capture the night while it is still fresh. Estimates are fine.</p>
+      <p class="subtitle">Keep it quick. Estimates are enough to spot what matters.</p>
     </header>
 
     <section class="card compact-card">
-      <p class="eyebrow">What this helps with</p>
-      <p class="helper-text">A sleep diary gives CBT-I its structure. You are looking for patterns, not trying to create a perfect night.</p>
+      <p class="eyebrow">What matters most</p>
+      <p class="helper-text">Capture the main shape of the night first. Add extra detail only when it feels useful.</p>
     </section>
 
     <section class="card">
@@ -28,72 +28,12 @@
             <input type="date" id="diary_date" required>
           </div>
           <div class="form-group">
-            <label for="time_in_bed">Time in bed</label>
-            <input type="time" id="time_in_bed" required>
-          </div>
-        </div>
-
-        <div class="field-grid two-up">
-          <div class="form-group">
-            <label for="lights_out_time">Lights out time</label>
-            <input type="time" id="lights_out_time" required>
-          </div>
-          <div class="form-group">
-            <label for="final_wake_time">Final wake time</label>
-            <input type="time" id="final_wake_time" required>
-          </div>
-        </div>
-
-        <div class="field-grid two-up">
-          <div class="form-group">
-            <label for="out_of_bed_time">Out of bed time</label>
-            <input type="time" id="out_of_bed_time" required>
-          </div>
-          <div class="form-group">
             <label for="estimated_total_sleep_time">Estimated total sleep time (hours)</label>
             <input type="number" id="estimated_total_sleep_time" min="0" max="16" step="0.25" placeholder="6.5" required>
           </div>
         </div>
 
         <div class="field-grid two-up">
-          <div class="form-group">
-            <label for="sleep_onset_latency">Sleep onset latency (minutes)</label>
-            <input type="number" id="sleep_onset_latency" min="0" max="300" value="20">
-          </div>
-          <div class="form-group">
-            <label for="total_awake_time">Total awake during night (minutes)</label>
-            <input type="number" id="total_awake_time" min="0" max="600" value="0">
-          </div>
-        </div>
-
-        <div class="field-grid two-up">
-          <div class="form-group">
-            <label for="awakenings">Number of awakenings</label>
-            <input type="number" id="awakenings" min="0" max="20" value="0">
-          </div>
-          <div class="form-group">
-            <label for="morning_energy">Morning energy (1-5)</label>
-            <select id="morning_energy">
-              <option value="1">1, drained</option>
-              <option value="2">2</option>
-              <option value="3" selected>3</option>
-              <option value="4">4</option>
-              <option value="5">5, strong</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="field-grid two-up">
-          <div class="form-group">
-            <label for="daytime_sleepiness">Daytime sleepiness (1-5)</label>
-            <select id="daytime_sleepiness">
-              <option value="1">1, none</option>
-              <option value="2">2</option>
-              <option value="3" selected>3</option>
-              <option value="4">4</option>
-              <option value="5">5, heavy</option>
-            </select>
-          </div>
           <div class="form-group">
             <label>Sleep quality (1-5)</label>
             <div class="rating-group compact-rating">
@@ -104,12 +44,76 @@
               <div class="rating-option"><input type="radio" name="sleep_quality" id="sq5" value="5"><label for="sq5">5</label></div>
             </div>
           </div>
+          <div class="form-group">
+            <label for="awakenings">Number of awakenings</label>
+            <input type="number" id="awakenings" min="0" max="20" value="0">
+          </div>
         </div>
 
-        <div class="form-group">
-          <label for="memo">Notes</label>
-          <textarea id="memo" placeholder="What stood out, if anything?"></textarea>
+        <div class="field-grid two-up">
+          <div class="form-group">
+            <label for="morning_energy">Morning energy (1-5)</label>
+            <select id="morning_energy">
+              <option value="1">1, drained</option>
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+              <option value="5">5, strong</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="memo">Notes</label>
+            <textarea id="memo" placeholder="Anything worth noting?"></textarea>
+          </div>
         </div>
+
+        <details class="details-card">
+          <summary>More details</summary>
+          <p class="helper-text details-helper">Optional if you want a fuller CBT-I record.</p>
+          <div class="field-grid two-up">
+            <div class="form-group">
+              <label for="time_in_bed">Time in bed</label>
+              <input type="time" id="time_in_bed">
+            </div>
+            <div class="form-group">
+              <label for="lights_out_time">Lights out time</label>
+              <input type="time" id="lights_out_time">
+            </div>
+          </div>
+
+          <div class="field-grid two-up">
+            <div class="form-group">
+              <label for="sleep_onset_latency">Sleep onset latency (minutes)</label>
+              <input type="number" id="sleep_onset_latency" min="0" max="300" value="20">
+            </div>
+            <div class="form-group">
+              <label for="total_awake_time">Total awake during night (minutes)</label>
+              <input type="number" id="total_awake_time" min="0" max="600" value="0">
+            </div>
+          </div>
+
+          <div class="field-grid two-up">
+            <div class="form-group">
+              <label for="final_wake_time">Final wake time</label>
+              <input type="time" id="final_wake_time">
+            </div>
+            <div class="form-group">
+              <label for="out_of_bed_time">Out of bed time</label>
+              <input type="time" id="out_of_bed_time">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="daytime_sleepiness">Daytime sleepiness (1-5)</label>
+            <select id="daytime_sleepiness">
+              <option value="1">1, none</option>
+              <option value="2">2</option>
+              <option value="3" selected>3</option>
+              <option value="4">4</option>
+              <option value="5">5, heavy</option>
+            </select>
+          </div>
+        </details>
 
         <button type="submit" class="btn" id="submitBtn">Save morning diary</button>
       </form>
@@ -123,7 +127,7 @@
   </div>
 
   <footer>
-    <p>Estimates are okay. Consistency matters more than precision.</p>
+    <p>Consistency matters more than precision.</p>
   </footer>
 
   <script src="assets/app.js"></script>

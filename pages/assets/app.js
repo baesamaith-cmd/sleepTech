@@ -66,6 +66,10 @@ function getRecentRecords(limit = 7) {
     .slice(0, limit);
 }
 
+function average(values) {
+  return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : null;
+}
+
 function calculateMetrics(records) {
   const complete = records.filter((record) => record.entries?.morning);
   if (!complete.length) {
@@ -73,35 +77,110 @@ function calculateMetrics(records) {
       avgSleepHours: null,
       avgQuality: null,
       avgTimeInBedHours: null,
-      efficiency: null
+      efficiency: null,
+      napDays: 0,
+      lowEnergyDays: 0,
+      recordCount: 0
     };
   }
 
-  let totalSleepHours = 0;
-  let totalQuality = 0;
-  let totalTimeInBedHours = 0;
-  let efficiencySamples = 0;
+  const sleepHoursList = [];
+  const qualityList = [];
+  const timeInBedHoursList = [];
+  const efficiencyList = [];
+  let napDays = 0;
+  let lowEnergyDays = 0;
 
   complete.forEach((record) => {
     const morning = record.entries.morning;
     const sleepHours = Number(morning.estimated_total_sleep_time || 0);
     const timeInBedMins = durationBetween(morning.time_in_bed, morning.out_of_bed_time);
 
-    totalSleepHours += sleepHours;
-    totalQuality += Number(morning.sleep_quality || 0);
+    if (sleepHours > 0) sleepHoursList.push(sleepHours);
+    if (morning.sleep_quality) qualityList.push(Number(morning.sleep_quality));
+    if (Number(morning.morning_energy || 0) <= 2) lowEnergyDays += 1;
+    if (record.entries?.evening?.nap_duration > 0) napDays += 1;
 
-    if (timeInBedMins !== null) {
-      totalTimeInBedHours += timeInBedMins / 60;
-      if (sleepHours > 0 && timeInBedMins > 0) efficiencySamples += (sleepHours * 60) / timeInBedMins;
+    if (timeInBedMins !== null && timeInBedMins > 0) {
+      timeInBedHoursList.push(timeInBedMins / 60);
+      if (sleepHours > 0) efficiencyList.push((sleepHours * 60) / timeInBedMins);
     }
   });
 
   return {
-    avgSleepHours: totalSleepHours / complete.length,
-    avgQuality: totalQuality / complete.length,
-    avgTimeInBedHours: totalTimeInBedHours / complete.length,
-    efficiency: efficiencySamples ? (efficiencySamples / complete.length) * 100 : null
+    avgSleepHours: average(sleepHoursList),
+    avgQuality: average(qualityList),
+    avgTimeInBedHours: average(timeInBedHoursList),
+    efficiency: average(efficiencyList) ? average(efficiencyList) * 100 : null,
+    napDays,
+    lowEnergyDays,
+    recordCount: complete.length
   };
+}
+
+function buildCoachingInsight(records, metrics) {
+  const latestRecord = records[0];
+  const latestEvening = latestRecord?.entries?.evening;
+
+  if (latestEvening?.nap_duration >= 45) {
+    return {
+      headline: 'Recent naps may be lowering your sleep pressure tonight.',
+      body: 'If you can, keep tonight simple and avoid going to bed too early just to catch up.'
+    };
+  }
+
+  if (metrics.lowEnergyDays >= 2 && metrics.recordCount >= 3) {
+    return {
+      headline: 'Keep tomorrow’s wake time steady, even after a rough night.',
+      body: 'A protected wake time often helps more than chasing sleep with a wider schedule.'
+    };
+  }
+
+  if (metrics.avgQuality !== null && metrics.avgQuality <= 2.5) {
+    return {
+      headline: 'If you get stuck awake tonight, leave bed briefly instead of pushing for sleep.',
+      body: 'A short quiet reset helps keep the bed linked with sleep rather than frustration.'
+    };
+  }
+
+  return {
+    headline: 'Protect your wake time more than your bedtime.',
+    body: 'A steady wake time is often the simplest place to create useful sleep pressure again.'
+  };
+}
+
+function buildSummaryFeedback(metrics) {
+  if (!metrics.recordCount) {
+    return 'Log a few mornings and evenings to unlock a short read on what your week is pointing to.';
+  }
+
+  const notes = [];
+
+  if (metrics.avgSleepHours !== null) {
+    if (metrics.avgSleepHours < 6.5) {
+      notes.push(`Your recent average sleep is ${metrics.avgSleepHours.toFixed(1)}h. Focus on consistency before trying to optimize everything.`);
+    } else if (metrics.avgSleepHours >= 7.5) {
+      notes.push(`Your recent average sleep is ${metrics.avgSleepHours.toFixed(1)}h. Keep protecting the routine that is already helping.`);
+    } else {
+      notes.push(`Your recent average sleep is ${metrics.avgSleepHours.toFixed(1)}h. Keep the routine light and repeatable.`);
+    }
+  }
+
+  if (metrics.avgTimeInBedHours !== null && metrics.avgSleepHours !== null && (metrics.avgTimeInBedHours - metrics.avgSleepHours) >= 1.5) {
+    notes.push('You are spending noticeably more time in bed than asleep. Reducing awake time in bed may help more than extending bedtime.');
+  }
+
+  if (metrics.napDays >= 2) {
+    notes.push('Naps showed up on multiple days this week, so keep an eye on whether they make nights feel lighter.');
+  }
+
+  if (!notes.length && metrics.avgQuality !== null) {
+    notes.push(metrics.avgQuality >= 3.5
+      ? 'Your recent week looks fairly stable. Stay with the basics before changing too much.'
+      : 'Your week looks mixed. Keep the inputs short and focus on one repeatable sleep behavior at a time.');
+  }
+
+  return notes.slice(0, 2).join(' ');
 }
 
 function renderDashboard() {
@@ -115,11 +194,24 @@ function renderDashboard() {
   const efficiencyValue = document.getElementById('efficiencyValue');
   const trendList = document.getElementById('trendList');
   const trendEmpty = document.getElementById('trendEmpty');
+  const coachingHeadline = document.getElementById('coachingHeadline');
+  const coachingBody = document.getElementById('coachingBody');
+  const summaryFeedback = document.getElementById('summaryFeedback');
 
   avgSleepValue.textContent = metrics.avgSleepHours ? `${metrics.avgSleepHours.toFixed(1)}h` : '--';
   avgQualityValue.textContent = metrics.avgQuality ? `${metrics.avgQuality.toFixed(1)}/5` : '--';
   avgBedValue.textContent = metrics.avgTimeInBedHours ? `${metrics.avgTimeInBedHours.toFixed(1)}h` : '--';
   efficiencyValue.textContent = metrics.efficiency ? `${Math.round(metrics.efficiency)}%` : '--';
+
+  if (coachingHeadline && coachingBody) {
+    const coaching = buildCoachingInsight(records, metrics);
+    coachingHeadline.textContent = coaching.headline;
+    coachingBody.textContent = coaching.body;
+  }
+
+  if (summaryFeedback) {
+    summaryFeedback.textContent = buildSummaryFeedback(metrics);
+  }
 
   if (!trendList || !trendEmpty) return;
   trendList.innerHTML = '';

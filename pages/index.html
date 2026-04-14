@@ -15,54 +15,27 @@
       <p class="subtitle">A lightweight CBT-I helper for calmer, more consistent sleep.</p>
     </header>
 
-    <section class="card hero-card">
-      <p class="eyebrow">CBT-I overview</p>
-      <h2>Start with structure, not just sleep tips</h2>
-      <p>CBT-I, or cognitive behavioral therapy for insomnia, is a structured behavioral approach that is commonly recommended before relying only on sleep medication. This app supports practice and tracking, not diagnosis.</p>
-      <div class="pillars-grid">
-        <div><strong>Sleep diary</strong><span>Track what is actually happening.</span></div>
-        <div><strong>Stimulus control</strong><span>Rebuild bed as a cue for sleep.</span></div>
-        <div><strong>Sleep restriction</strong><span>Use cautiously, with safety notes.</span></div>
-        <div><strong>Cognitive shifts</strong><span>Loosen rigid or fearful sleep thoughts.</span></div>
-        <div><strong>Relaxation</strong><span>Reduce arousal, not force sleep.</span></div>
-      </div>
-      <p class="helper-text">Sleep hygiene can help, but by itself it is usually not the full CBT-I plan.</p>
-    </section>
-
-    <section class="quick-stats">
-      <div class="stat-card">
-        <div class="stat-value" id="avgSleepValue">--</div>
-        <div class="stat-label">7-day avg sleep</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="avgQualityValue">--</div>
-        <div class="stat-label">Avg quality</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="avgBedValue">--</div>
-        <div class="stat-label">Avg time in bed</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-value" id="efficiencyValue">--</div>
-        <div class="stat-label">Sleep efficiency</div>
-      </div>
+    <section class="card coaching-card">
+      <p class="eyebrow">Today’s coaching</p>
+      <h2 id="coachingHeadline">Protect your wake time more than your bedtime.</h2>
+      <p id="coachingBody">A steady wake time is often the simplest place to create useful sleep pressure again.</p>
     </section>
 
     <section class="card">
       <div class="section-heading">
         <div>
           <p class="eyebrow">Daily flow</p>
-          <h2>Use the current app flow</h2>
+          <h2>Quick check-ins</h2>
         </div>
       </div>
       <div class="action-grid">
         <a class="action-card" href="morning.html">
           <strong>☀️ Morning diary</strong>
-          <span>Log last night’s sleep, energy, and overnight wakefulness.</span>
+          <span>Log last night’s sleep, quality, awakenings, and morning energy.</span>
         </a>
         <a class="action-card" href="evening.html">
           <strong>🌙 Evening diary</strong>
-          <span>Log daytime factors, bedtime plan, and your next step tonight.</span>
+          <span>Log today’s caffeine, naps, bedtime plan, and anything that may affect tonight.</span>
         </a>
       </div>
     </section>
@@ -70,64 +43,60 @@
     <section class="card">
       <div class="section-heading">
         <div>
-          <p class="eyebrow">7-day trend</p>
-          <h2>Recent diary entries</h2>
+          <p class="eyebrow">7-day summary</p>
+          <h2>Recent pattern</h2>
         </div>
       </div>
+      <section class="quick-stats">
+        <div class="stat-card">
+          <div class="stat-value" id="avgSleepValue">--</div>
+          <div class="stat-label">Avg sleep</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="avgQualityValue">--</div>
+          <div class="stat-label">Avg quality</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="avgBedValue">--</div>
+          <div class="stat-label">Avg time in bed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="efficiencyValue">--</div>
+          <div class="stat-label">Efficiency</div>
+        </div>
+      </section>
+      <div class="summary-feedback" id="summaryFeedback">Log a few mornings and evenings to unlock a short read on what your week is pointing to.</div>
       <div id="trendEmpty" class="helper-text">Your last 7 days will appear here after you save a few entries.</div>
       <div id="trendList" class="trend-list"></div>
     </section>
 
+    <section class="card hero-card compact-hero">
+      <p class="eyebrow">CBT-I, simply</p>
+      <h2>Use structure to make sleep feel less random</h2>
+      <div class="pillars-grid compact-pillars">
+        <div><strong>Diary</strong><span>Notice what is actually happening.</span></div>
+        <div><strong>Wake time</strong><span>Build consistency before chasing perfect nights.</span></div>
+        <div><strong>Stimulus control</strong><span>Leave bed briefly if you are stuck awake.</span></div>
+      </div>
+      <p class="helper-text">This app supports behavior change and pattern awareness. It is not diagnosis or medical advice.</p>
+    </section>
+
     <section class="card caution-card">
-      <p class="eyebrow">Stimulus control</p>
-      <h2>What to do when sleep feels stuck</h2>
+      <p class="eyebrow">Quick reset</p>
+      <h2>When sleep feels stuck</h2>
       <ul class="check-list">
         <li>Use bed mainly for sleep, not for scrolling, planning, or worrying.</li>
         <li>If you are not drifting off after about 20 minutes, get out of bed for a brief quiet reset.</li>
         <li>Return only when you feel sleepy again.</li>
         <li>Keep your wake time as consistent as you reasonably can.</li>
-        <li>Remind yourself that calm repetition matters more than one perfect night.</li>
       </ul>
     </section>
 
     <section class="card warning-card">
-      <p class="eyebrow">Sleep restriction caution</p>
-      <h2>Helpful for some people, not casual for everyone</h2>
-      <p>Sleep restriction or sleep compression can feel harder before it feels better. Use extra caution and consider professional support if you have severe daytime sleepiness, driving risk, bipolar disorder, seizures, severe depression or anxiety, or possible sleep apnea.</p>
-      <p class="helper-text">This app is educational support only. It does not diagnose insomnia or tell you what is medically safe for you.</p>
-    </section>
-
-    <section class="card">
-      <p class="eyebrow">Quick action plans</p>
-      <div class="plan-stack">
-        <div class="plan-card">
-          <h3>I can’t fall asleep</h3>
-          <ol>
-            <li>Drop the goal of forcing sleep and aim for quiet rest.</li>
-            <li>If you feel stuck for around 20 minutes, leave bed briefly.</li>
-            <li>Do one low-light, low-stimulation activity.</li>
-            <li>Return to bed only when sleepiness picks back up.</li>
-          </ol>
-        </div>
-        <div class="plan-card">
-          <h3>I wake up in the middle of the night</h3>
-          <ol>
-            <li>Check the clock as little as possible.</li>
-            <li>Keep the bed from turning into a frustration zone.</li>
-            <li>If you are wide awake, do a short quiet reset outside bed.</li>
-            <li>Use slow breathing or a simple body scan, not sleep pressure.</li>
-          </ol>
-        </div>
-        <div class="plan-card">
-          <h3>My sleep schedule is broken</h3>
-          <ol>
-            <li>Pick one realistic wake time and protect it first.</li>
-            <li>Track your actual sleep for at least several days.</li>
-            <li>Avoid chasing sleep with long naps or random catch-up mornings.</li>
-            <li>Shift bedtime gradually after your wake time becomes steadier.</li>
-          </ol>
-        </div>
-      </div>
+      <p class="eyebrow">Use caution</p>
+      <h2>Sleep restriction is not casual advice</h2>
+      <p>Compression or restriction approaches can help some people, but they can also raise daytime sleepiness. Be careful if you have driving risk, seizures, bipolar disorder, severe depression or anxiety, or possible sleep apnea.</p>
+      <p class="helper-text">Educational support only, not medical advice or diagnosis.</p>
     </section>
 
     <div id="message" class="message"></div>

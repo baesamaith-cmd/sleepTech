@@ -12,7 +12,7 @@
     <header class="page-header">
       <div class="logo">🌙</div>
       <h1>Evening sleep diary</h1>
-      <p class="subtitle">Log daytime factors and plan your night with a CBT-I lens.</p>
+      <p class="subtitle">A short check-in for tonight’s sleep pressure and plan.</p>
     </header>
 
     <section class="card recommendation-card is-hidden" id="recommendationCard">
@@ -36,19 +36,10 @@
           </div>
         </div>
 
-        <div class="field-grid three-up">
+        <div class="field-grid two-up">
           <div class="form-group">
             <label for="caffeine_amount">Caffeine</label>
             <select id="caffeine_amount">
-              <option value="none">None</option>
-              <option value="light">Light</option>
-              <option value="moderate">Moderate</option>
-              <option value="high">High</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="alcohol_amount">Alcohol</label>
-            <select id="alcohol_amount">
               <option value="none">None</option>
               <option value="light">Light</option>
               <option value="moderate">Moderate</option>
@@ -63,29 +54,44 @@
 
         <div class="field-grid two-up">
           <div class="form-group">
-            <label>Exercised today?</label>
-            <div class="toggle-group">
-              <div class="toggle-option"><input type="radio" name="exercise" id="exercise_yes" value="yes"><label for="exercise_yes">Yes</label></div>
-              <div class="toggle-option"><input type="radio" name="exercise" id="exercise_no" value="no" checked><label for="exercise_no">No</label></div>
-            </div>
+            <label for="stress_or_condition">Stress or condition</label>
+            <input type="text" id="stress_or_condition" placeholder="Travel, illness, work stress, pain, or anything else">
           </div>
           <div class="form-group">
-            <label for="stress_or_condition">Stress or conditions</label>
-            <input type="text" id="stress_or_condition" placeholder="Travel, illness, work stress, pain, or anything else">
+            <label for="memo">Notes</label>
+            <textarea id="memo" placeholder="Anything that may affect tonight?"></textarea>
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="memo">Notes</label>
-          <textarea id="memo" placeholder="What might affect tonight’s sleep?"></textarea>
-        </div>
+        <details class="details-card">
+          <summary>Optional details</summary>
+          <p class="helper-text details-helper">Useful when you want a little more context, but not required.</p>
+          <div class="field-grid two-up">
+            <div class="form-group">
+              <label for="alcohol_amount">Alcohol</label>
+              <select id="alcohol_amount">
+                <option value="none">None</option>
+                <option value="light">Light</option>
+                <option value="moderate">Moderate</option>
+                <option value="high">High</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Exercised today?</label>
+              <div class="toggle-group">
+                <div class="toggle-option"><input type="radio" name="exercise" id="exercise_yes" value="yes"><label for="exercise_yes">Yes</label></div>
+                <div class="toggle-option"><input type="radio" name="exercise" id="exercise_no" value="no" checked><label for="exercise_no">No</label></div>
+              </div>
+            </div>
+          </div>
+        </details>
 
         <section class="compact-card guidance-card">
           <p class="eyebrow">Tonight’s reminder</p>
           <ul class="check-list">
-            <li>Go to bed when sleepy, not just because the clock says so.</li>
-            <li>If you get stuck awake, do a brief reset outside bed and return when sleepy.</li>
             <li>Protect tomorrow’s wake time more than tonight’s perfect sleep.</li>
+            <li>If you get stuck awake, do a short reset outside bed instead of forcing it.</li>
+            <li>Go to bed when sleepy, not just because the clock says so.</li>
           </ul>
         </section>
 
