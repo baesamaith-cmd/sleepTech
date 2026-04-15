@@ -1,0 +1,127 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1776145679545,
+  "projectRoot": "/Users/baesamaith/projects/sleepTech",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "assets",
+      "docs",
+      "pages"
+    ],
+    "gitBranches": null
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "api": {
+      "path": "api",
+      "purpose": "API routes",
+      "fileCount": 2,
+      "lastAccessed": 1776145679536,
+      "keyFiles": [
+        "README.md"
+      ]
+    },
+    "assets": {
+      "path": "assets",
+      "purpose": "Static assets",
+      "fileCount": 2,
+      "lastAccessed": 1776145679536,
+      "keyFiles": [
+        "app.js",
+        "styles.css"
+      ]
+    },
+    "backend": {
+      "path": "backend",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776145679536,
+      "keyFiles": []
+    },
+    "config": {
+      "path": "config",
+      "purpose": "Configuration files",
+      "fileCount": 1,
+      "lastAccessed": 1776145679537,
+      "keyFiles": [
+        "schema.examples.json"
+      ]
+    },
+    "docs": {
+      "path": "docs",
+      "purpose": "Documentation",
+      "fileCount": 1,
+      "lastAccessed": 1776145679537,
+      "keyFiles": [
+        "openclaw-prompts.md"
+      ]
+    },
+    "frontend": {
+      "path": "frontend",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776145679537,
+      "keyFiles": []
+    },
+    "pages": {
+      "path": "pages",
+      "purpose": "Page components",
+      "fileCount": 4,
+      "lastAccessed": 1776145679537,
+      "keyFiles": [
+        "evening.html",
+        "index.html",
+        "morning.html"
+      ]
+    },
+    "reports": {
+      "path": "reports",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776145679537,
+      "keyFiles": []
+    },
+    "sleep-data": {
+      "path": "sleep-data",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1776145679537,
+      "keyFiles": [
+        "README.md"
+      ]
+    },
+    "pages/assets": {
+      "path": "pages/assets",
+      "purpose": "Static assets",
+      "fileCount": 2,
+      "lastAccessed": 1776145679537,
+      "keyFiles": [
+        "app.js",
+        "styles.css"
+      ]
+    }
+  },
+  "hotPaths": [],
+  "userDirectives": []
+}

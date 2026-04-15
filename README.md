@@ -2,6 +2,15 @@
 
 **Recommended stack:** GitHub Pages for the mobile form frontend, Vercel Functions for the serverless API, and a separate private GitHub repo for canonical JSON storage.
 
+## Product direction
+
+Before changing features, UX, copy, or priorities, read:
+
+- `PRODUCT_DIRECTION.md`
+
+Core principle:
+- **Prove real sleep improvement and willingness to pay first, then earn the right to become a companion.**
+
 ## Why this stack
 
 This is the simplest good MVP for your requirements.

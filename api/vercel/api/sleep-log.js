@@ -91,9 +91,14 @@ async function getExistingFile(owner, repo, path, token) {
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://baesamaith-cmd.github.io');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-App-Secret');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
+  
+  if (req.headers['x-app-secret'] !== process.env.APP_SECRET) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -104,6 +109,9 @@ export default async function handler(req, res) {
   }
 
   const data = req.body || {};
+  if (typeof data !== 'object' || data === null || Array.isArray(data)) {
+    return res.status(400).json({ error: 'Invalid JSON body' });
+  }
   const { date, type, submitted_at } = data;
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date || '')) {

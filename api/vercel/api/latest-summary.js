@@ -1,46 +1,19 @@
 function addCors(res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://baesamaith-cmd.github.io');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-}
-
-async function getFile(owner, repo, path, token) {
-  const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github+json'
-    }
-  });
-
-  if (response.status === 404) return null;
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Failed to read file: ${error}`);
-  }
-
-  return response.json();
-}
-
-function formatMorningSummary(entry) {
-  return `오늘 아침 기록: ${entry.sleep_time} 취침, ${entry.wake_time} 기상, 수면 질 ${entry.sleep_quality}, 중간 각성 ${entry.awakenings}회`;
-}
-
-function formatEveningSummary(entry) {
-  const caffeine = entry.caffeine ? '카페인 O' : '카페인 X';
-  const exercise = entry.exercise ? '운동 O' : '운동 X';
-  const nap = entry.nap ? '낮잠 O' : '낮잠 X';
-  const bedtime = entry.expected_bedtime ? `, 예상 취침 ${entry.expected_bedtime}` : '';
-  return `최근 저녁 기록: ${caffeine}, ${exercise}, ${nap}${bedtime}`;
-}
-
-function isoDate(value) {
-  return value.toISOString().split('T')[0];
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-App-Secret');
 }
 
 export default async function handler(req, res) {
   addCors(res);
   if (req.method === 'OPTIONS') return res.status(200).end();
+  
+  if (req.headers['x-app-secret'] !== process.env.APP_SECRET) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   if (req.method !== 'GET') {
+
     return res.status(405).json({ error: 'Method not allowed' });
   }
 

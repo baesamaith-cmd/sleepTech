@@ -21,13 +21,20 @@ function getDateKey() {
   return now.toISOString().split('T')[0];
 }
 
+const APP_SECRET = window.APP_SECRET || '';
+
+async function fetchWithAuth(url, options = {}) {
+  const headers = { ...options.headers, 'X-App-Secret': APP_SECRET };
+  return fetch(url, { ...options, headers });
+}
+
 async function loadPreviousSummary(target) {
   const card = document.getElementById('previousSummaryCard');
   const text = document.getElementById('previousSummaryText');
   if (!card || !text || !target) return;
 
   try {
-    const response = await fetch(`${API_BASE}/api/latest-summary?for=${target}`);
+    const response = await fetchWithAuth(`${API_BASE}/api/latest-summary?for=${target}`);
     if (!response.ok) return;
     const result = await response.json();
     if (!result?.found || !result?.summary) return;
@@ -36,6 +43,128 @@ async function loadPreviousSummary(target) {
   } catch {
     // keep summary hidden on failure
   }
+}
+
+async function loadPatternInsights() {
+  const coachingCard = document.getElementById('patternInsightsCard');
+  const buildingCard = document.getElementById('patternBuildingCard');
+  if (!coachingCard && !buildingCard) return;
+
+  try {
+    const response = await fetchWithAuth(`${API_BASE}/api/pattern-insights`);
+    if (!response.ok) return;
+    const result = await response.json();
+
+    if (result.status === 'building') {
+      if (buildingCard) {
+        const insightEl = document.getElementById('buildingInsight');
+        const recEl = document.getElementById('buildingRecommendation');
+
+        if (insightEl) insightEl.textContent = result.insight;
+        if (recEl) recEl.textContent = result.today_action;
+
+        buildingCard.classList.remove('is-hidden');
+      }
+    } else if (result.status === 'ready') {
+      if (coachingCard) {
+        const headlineEl = document.getElementById('coachingHeadline');
+        const insightEl = document.getElementById('coachingInsight');
+        const recEl = document.getElementById('coachingRecommendation');
+        const actionEl = document.getElementById('coachingAction');
+        const confEl = document.getElementById('coachingConfidence');
+
+        if (headlineEl) headlineEl.textContent = result.headline;
+        if (insightEl) insightEl.textContent = result.insight;
+        if (recEl) recEl.textContent = result.recommendation;
+        if (actionEl) actionEl.textContent = result.today_action;
+        if (confEl) confEl.textContent = result.confidence_note;
+
+        coachingCard.classList.remove('is-hidden');
+      }
+    }
+  } catch {
+    // keep cards hidden on failure
+  }
+}
+
+async function loadBedtimeRecommendation() {
+  const card = document.getElementById('bedtimeRecommendationCard');
+  const infoCard = document.getElementById('bedtimeInfoCard');
+  if (!card) return;
+
+  const caffeine = document.querySelector('input[name="caffeine"]:checked')?.value === 'yes';
+  const exercise = document.querySelector('input[name="exercise"]:checked')?.value === 'yes';
+  const nap = document.querySelector('input[name="nap"]:checked')?.value === 'yes';
+  const stress = document.getElementById('stress_or_condition')?.value.trim() || '';
+
+  const params = new URLSearchParams();
+  if (caffeine) params.append('caffeine', 'true');
+  if (exercise) params.append('exercise', 'true');
+  if (nap) params.append('nap', 'true');
+  if (stress) params.append('stress', stress);
+
+  try {
+    const response = await fetchWithAuth(`${API_BASE}/api/bedtime-recommendation?${params.toString()}`);
+    if (!response.ok) return;
+    const result = await response.json();
+
+    if (result.show_recommendation && result.recommended_bedtime_start) {
+      const timeEl = document.getElementById('recommendationTime');
+      const reasonEl = document.getElementById('recommendationReason');
+      const tipEl = document.getElementById('recommendationTip');
+      const uncertaintyEl = document.getElementById('recommendationUncertainty');
+
+      if (timeEl) timeEl.textContent = `${result.recommended_bedtime_start} ~ ${result.recommended_bedtime_end}`;
+      if (reasonEl) reasonEl.textContent = result.bedtime_reason;
+      if (tipEl && result.bedtime_tip) tipEl.textContent = result.bedtime_tip;
+      if (uncertaintyEl && result.uncertainty_note) {
+        uncertaintyEl.textContent = result.uncertainty_note;
+        uncertaintyEl.style.display = 'block';
+      }
+
+      card.classList.remove('is-hidden');
+    } else if (result.info_message) {
+      const infoMsgEl = document.getElementById('bedtimeInfoMessage');
+      if (infoMsgEl) infoMsgEl.textContent = result.info_message;
+      if (infoCard) infoCard.classList.remove('is-hidden');
+    }
+  } catch {
+    // keep card hidden on failure
+  }
+}
+
+async function submitForm(data, idleLabel) {
+  const submitBtn = document.getElementById('submitBtn');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = '저장 중...';
+  }
+
+  try {
+    const response = await fetchWithAuth(`${API_BASE}/api/sleep-log`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+
+    const result = await response.json();
+    if (!response.ok) {
+      throw new Error(result.error || '제출 실패');
+    }
+
+    showMessage('success', result.message || '저장 완료!');
+    return true;
+  } catch (err) {
+    showMessage('error', err.message || '저장에 실패했어요. 다시 시도해 주세요.');
+    return false;
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = idleLabel;
+    }
+  }
+}
+
 }
 
 async function loadPatternInsights() {
@@ -132,16 +261,16 @@ function setupVoiceInputs() {
 
   if (!voiceButtons.length) return;
 
-  if (!SpeechRecognition) {
-    voiceButtons.forEach((btn) => {
+  const isSupported = !!SpeechRecognition;
+
+  voiceButtons.forEach((btn) => {
+    if (!isSupported) {
       btn.disabled = true;
       btn.textContent = '🎤 브라우저 미지원';
       btn.title = '이 브라우저에서는 음성 입력을 지원하지 않아요.';
-    });
-    return;
-  }
-
-  voiceButtons.forEach((btn) => {
+      return;
+    }
+    
     const targetId = btn.dataset.voiceTarget;
     const target = document.getElementById(targetId);
     if (!target) return;

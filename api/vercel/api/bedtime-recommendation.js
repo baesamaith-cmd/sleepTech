@@ -1,137 +1,19 @@
 function addCors(res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://baesamaith-cmd.github.io');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-}
-
-async function getFile(owner, repo, path, token) {
-  const response = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${path}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-      Accept: 'application/vnd.github+json'
-    }
-  });
-
-  if (response.status === 404) return null;
-  if (!response.ok) {
-    const error = await response.text();
-    throw new Error(`Failed to read file: ${error}`);
-  }
-
-  return response.json();
-}
-
-function isoDate(value) {
-  return value.toISOString().split('T')[0];
-}
-
-function formatTime(hours, minutes) {
-  const h = String(hours).padStart(2, '0');
-  const m = String(minutes).padStart(2, '0');
-  return `${h}:${m}`;
-}
-
-function parseTime(timeStr) {
-  const [h, m] = timeStr.split(':').map(Number);
-  return h * 60 + m;
-}
-
-function calculateBedtimeRecommendation(yesterdayMorning, todayEvening) {
-  let baseBedtimeMinutes = 23.5 * 60;
-  let hasValidWakeTime = false;
-
-  if (yesterdayMorning?.wake_time) {
-    const wakeMins = parseTime(yesterdayMorning.wake_time);
-    baseBedtimeMinutes = wakeMins - (7.5 * 60);
-    if (baseBedtimeMinutes < 0) baseBedtimeMinutes += 24 * 60;
-    hasValidWakeTime = true;
-  }
-
-  let adjustmentMinutes = 0;
-  let reason = '';
-
-  if (yesterdayMorning) {
-    const quality = yesterdayMorning.sleep_quality || 3;
-    const awakenings = yesterdayMorning.awakenings || 0;
-    
-    let sleepDurationMinutes = 0;
-    if (yesterdayMorning.sleep_time && yesterdayMorning.wake_time) {
-      const sleepMins = parseTime(yesterdayMorning.sleep_time);
-      const wakeMins = parseTime(yesterdayMorning.wake_time);
-      sleepDurationMinutes = wakeMins >= sleepMins 
-        ? wakeMins - sleepMins 
-        : (24 * 60 - sleepMins) + wakeMins;
-    }
-
-    if (quality <= 2 || awakenings >= 2) {
-      adjustmentMinutes = -30;
-      reason = '어제 컨디션이 조금 아쉬웠네요. 충분히 쉬는 것이 도움돼요';
-    } else if (sleepDurationMinutes > 0 && sleepDurationMinutes < 6 * 60) {
-      adjustmentMinutes = -15;
-      reason = '어제 수면 시간이 부족했으니 오늘은 일찍 쉬어보세요';
-    } else if (sleepDurationMinutes > 0 && sleepDurationMinutes < 7 * 60) {
-      adjustmentMinutes = -15;
-      reason = '최근 수면이 조금 부족했던 것 같아요';
-    }
-  }
-
-  if (todayEvening && !reason) {
-    const hadNap = todayEvening.nap;
-    const hadCaffeine = todayEvening.caffeine;
-
-    if (hadNap || hadCaffeine) {
-      if (adjustmentMinutes <= -15) {
-        adjustmentMinutes += 15;
-        if (adjustmentMinutes > -15) adjustmentMinutes = -15;
-      } else {
-        adjustmentMinutes = 15;
-      }
-      reason = hadNap && hadCaffeine 
-        ? '낮잠과 카페인 섭취로 인해 조금 늦어도 괜찮아요'
-        : hadNap 
-          ? '낮잠을 쉬셨으니 조금 늦어도 괜찮아요'
-          : '카페인 섭취가 있어서 조금 늦춰도 돼요';
-    }
-  }
-
-  if (reason === '') {
-    if (hasValidWakeTime) {
-      reason = '어제 기상 시간을 기준으로 추천드려요';
-    } else {
-      reason = '평소 패턴을 바탕으로 추천드려요';
-    }
-  }
-
-  const finalBedtimeStartMinutes = baseBedtimeMinutes + adjustmentMinutes;
-  const finalBedtimeEndMinutes = finalBedtimeStartMinutes + 30;
-
-  const startH = Math.floor(((finalBedtimeStartMinutes % (24 * 60)) + (24 * 60)) % (24 * 60) / 60);
-  const startM = ((finalBedtimeStartMinutes % (24 * 60)) + (24 * 60)) % (24 * 60) % 60;
-  const endH = Math.floor(((finalBedtimeEndMinutes % (24 * 60)) + (24 * 60)) % (24 * 60) / 60);
-  const endM = ((finalBedtimeEndMinutes % (24 * 60)) + (24 * 60)) % (24 * 60) % 60;
-
-  const tips = [
-    '자는 30분 전에 화면을 멀리 해보세요.',
-    '오늘은 가볍게 스트레칭이나 숨심으로 마무리해 보세요.',
-    '완전히 어둡게 만들고 시계를 확인하지 마세요.',
-    '조용한 음악이나 자연소리와 함께 휴식을 취해 보세요.',
-    '온수를 마시거나 가볍게 샤워하면 수면에 좋아요.'
-  ];
-
-  const tipIndex = Math.floor(Math.random() * tips.length);
-
-  return {
-    recommended_bedtime_start: formatTime(startH, startM),
-    recommended_bedtime_end: formatTime(endH, endM),
-    bedtime_reason: reason,
-    bedtime_tip: tips[tipIndex]
-  };
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-App-Secret');
 }
 
 export default async function handler(req, res) {
   addCors(res);
   if (req.method === 'OPTIONS') return res.status(200).end();
+  
+  if (req.headers['x-app-secret'] !== process.env.APP_SECRET) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+
   if (req.method !== 'GET') {
+
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
