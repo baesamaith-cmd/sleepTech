@@ -219,6 +219,11 @@ async function loadSummaryStats() {
     } else if (stats.count > 0) {
       feedback.textContent = '데이터를 꾸준히 모아주세요. 조금 더 기록이 필요해요!';
     }
+    
+    const summaryEyebrow = document.getElementById('summaryEyebrow');
+    if (summaryEyebrow && stats.count !== undefined) {
+      summaryEyebrow.textContent = `최근 ${stats.count}일 요약`;
+    }
   } catch (err) {
     console.error(err);
   }
