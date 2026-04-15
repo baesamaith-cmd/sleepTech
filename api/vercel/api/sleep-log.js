@@ -12,8 +12,9 @@ function validateScale(value, field) {
 
 function validateMorning(data) {
   const errors = [];
-  for (const field of ['time_in_bed', 'lights_out_time', 'final_wake_time', 'out_of_bed_time']) {
-    if (!isBlank(data[field]) && !isTime(data[field])) errors.push(`${field} must be HH:MM`);
+  // Validate optional time fields
+  for (const field of ['time_in_bed', 'lights_out_time', 'final_wake_time', 'out_of_bed_time', 'bedtime', 'wake_time']) {
+    if (data[field] && !isTime(data[field])) errors.push(`${field} must be HH:MM`);
   }
 
   if (!isBlank(data.sleep_onset_latency) && (!Number.isInteger(data.sleep_onset_latency) || data.sleep_onset_latency < 0)) {
@@ -24,10 +25,6 @@ function validateMorning(data) {
   }
   if (!isBlank(data.total_awake_time) && (!Number.isInteger(data.total_awake_time) || data.total_awake_time < 0)) {
     errors.push('total_awake_time must be a non-negative integer');
-  }
-
-  if (!isBlank(data.estimated_total_sleep_time) && (typeof data.estimated_total_sleep_time !== 'number' || data.estimated_total_sleep_time < 0)) {
-    errors.push('estimated_total_sleep_time must be a non-negative number');
   }
 
   if (!isBlank(data.sleep_quality)) {
@@ -52,16 +49,8 @@ function validateEvening(data) {
     if (typeof data[field] !== 'boolean') errors.push(`${field} must be boolean`);
   }
 
-  if (data.expected_bedtime && !isTime(data.expected_bedtime)) {
-    errors.push('expected_bedtime must be HH:MM');
-  }
-
-  if (!['none', 'light', 'moderate', 'high'].includes(data.caffeine_amount || '')) {
-    errors.push('caffeine_amount must be none, light, moderate, or high');
-  }
-
-  if (!['none', 'light', 'moderate', 'high'].includes(data.alcohol_amount || '')) {
-    errors.push('alcohol_amount must be none, light, moderate, or high');
+  if (!isBlank(data.alcohol_amount) && !['light', 'moderate', 'high'].includes(data.alcohol_amount)) {
+    errors.push('alcohol_amount must be light, moderate, or high');
   }
 
   if (!Number.isInteger(data.nap_duration) || data.nap_duration < 0) {
@@ -91,13 +80,15 @@ async function getExistingFile(owner, repo, path, token) {
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://baesamaith-cmd.github.io');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-App-Secret');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') return res.status(200).end();
+
   
-  if (req.headers['x-app-secret'] !== process.env.APP_SECRET) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  // Secret auth removed for MVP consistency.
+  // if (req.headers['x-app-secret'] !== process.env.APP_SECRET) {
+  //   return res.status(401).json({ error: 'Unauthorized' });
+  // }
 
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });

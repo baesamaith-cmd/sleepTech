@@ -10,8 +10,7 @@
 <body>
   <div class="container">
     <header class="page-header">
-      <div class="logo">🌙
-      <h1>저녁 수면 일지</h1></div>
+      <div class="logo">🌙 <h1>저녁 수면 일지</h1></div>
       <p class="subtitle">오늘 밤 수면 압박과 계획을 확인하세요.</p>
     </header>
 
@@ -71,18 +70,8 @@
         </div>
 
         <div class="form-group">
-          <div class="label-row">
-            <label for="stress_or_condition">스트레스 및 컨디션</label>
-            <button type="button" class="voice-btn" data-voice-target="stress_or_condition">🎤 음성 입력</button>
-          </div>
-          <input type="text" id="stress_or_condition" class="input-large" placeholder="스트레스, 여행, 몸 상태 등">
-        </div>
-
-        <div class="form-group">
-          <div class="label-row">
-            <label for="memo">메모</label>
-            <button type="button" class="voice-btn" data-voice-target="memo">🎤 음성 입력</button>
-          </div>
+          <label for="memo">메모</label>
+          <button type="button" class="btn-voice" data-voice-target="memo">🎤 음성 입력</button>
           <textarea id="memo" placeholder="오늘 밤 수면에 영향을 줄 만한 일이 있나요?"></textarea>
         </div>
 
