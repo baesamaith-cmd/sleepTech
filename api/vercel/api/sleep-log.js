@@ -16,18 +16,32 @@ function validateMorning(data) {
     if (!isBlank(data[field]) && !isTime(data[field])) errors.push(`${field} must be HH:MM`);
   }
 
-  for (const field of ['sleep_onset_latency', 'awakenings', 'total_awake_time']) {
-    if (!Number.isInteger(data[field]) || data[field] < 0) errors.push(`${field} must be a non-negative integer`);
+  if (!isBlank(data.sleep_onset_latency) && (!Number.isInteger(data.sleep_onset_latency) || data.sleep_onset_latency < 0)) {
+    errors.push('sleep_onset_latency must be a non-negative integer');
+  }
+  if (!isBlank(data.awakenings) && (!Number.isInteger(data.awakenings) || data.awakenings < 0)) {
+    errors.push('awakenings must be a non-negative integer');
+  }
+  if (!isBlank(data.total_awake_time) && (!Number.isInteger(data.total_awake_time) || data.total_awake_time < 0)) {
+    errors.push('total_awake_time must be a non-negative integer');
   }
 
-  if (typeof data.estimated_total_sleep_time !== 'number' || data.estimated_total_sleep_time < 0) {
+  if (!isBlank(data.estimated_total_sleep_time) && (typeof data.estimated_total_sleep_time !== 'number' || data.estimated_total_sleep_time < 0)) {
     errors.push('estimated_total_sleep_time must be a non-negative number');
   }
 
-  ['sleep_quality', 'morning_energy', 'daytime_sleepiness'].forEach((field) => {
-    const error = validateScale(data[field], field);
+  if (!isBlank(data.sleep_quality)) {
+    const error = validateScale(data.sleep_quality, 'sleep_quality');
     if (error) errors.push(error);
-  });
+  }
+  if (!isBlank(data.morning_energy)) {
+    const error = validateScale(data.morning_energy, 'morning_energy');
+    if (error) errors.push(error);
+  }
+  if (!isBlank(data.daytime_sleepiness)) {
+    const error = validateScale(data.daytime_sleepiness, 'daytime_sleepiness');
+    if (error) errors.push(error);
+  }
 
   return errors;
 }
