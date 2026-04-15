@@ -69,11 +69,11 @@
           </div>
         </div>
 
-        <div class="form-group">
-          <label for="memo">메모</label>
-          <button type="button" class="btn-voice" data-voice-target="memo">🎤 음성 입력</button>
-          <textarea id="memo" placeholder="오늘 밤 수면에 영향을 줄 만한 일이 있나요?"></textarea>
-        </div>
+        <section class="card" style="padding: 10px 15px; border-style: dashed;">
+          <label for="memo" class="eyebrow" style="margin-bottom: 5px;">메모 (선택 사항)</label>
+          <button type="button" class="btn-voice" data-voice-target="memo" style="margin-bottom: 8px;">🎤 음성 입력</button>
+          <textarea id="memo" placeholder="오늘 밤 수면에 영향을 줄 만한 일이 있나요?" style="min-height: 80px;"></textarea>
+        </section>
 
         <button type="submit" class="btn" id="submitBtn">저녁 일지 저장</button>
       </form>

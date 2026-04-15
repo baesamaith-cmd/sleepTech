@@ -12,8 +12,8 @@ function validateScale(value, field) {
 
 function validateMorning(data) {
   const errors = [];
-  if (!isBlank(data.sleep_time) && (typeof data.sleep_time !== 'number' || data.sleep_time < 0)) {
-    errors.push('sleep_time must be a non-negative number');
+  if (!isBlank(data.sleep_time) && !isTime(data.sleep_time)) {
+    errors.push('sleep_time must be HH:MM');
   }
   if (!isBlank(data.wake_time) && !isTime(data.wake_time)) {
     errors.push('wake_time must be HH:MM');
@@ -73,7 +73,7 @@ async function getExistingFile(owner, repo, path, token) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', 'https://baesamaith-cmd.github.io');
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 

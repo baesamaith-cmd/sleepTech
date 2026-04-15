@@ -237,18 +237,18 @@ document.addEventListener('DOMContentLoaded', () => {
     morningForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-        const data = {
-          type: 'morning',
-          date: document.getElementById('diary_date').value,
-          sleep_time: parseFloat(document.getElementById('sleep_time').value),
-          wake_time: document.getElementById('wake_time').value,
-          sleep_quality: parseInt(document.querySelector('input[name="sleep_quality"]:checked')?.value || '3', 10),
-          awakenings: parseInt(document.getElementById('awakenings').value || '0', 10),
-          morning_energy: parseInt(document.getElementById('morning_energy').value || '3', 10),
-          daytime_sleepiness: parseInt(document.getElementById('daytime_sleepiness').value || '3', 10),
-          memo: document.getElementById('memo').value.trim(),
-          submitted_at: new Date().toISOString()
-        };
+          const data = {
+            type: 'morning',
+            date: document.getElementById('diary_date').value,
+            sleep_time: document.getElementById('bedtime').value,
+            wake_time: document.getElementById('wake_time').value,
+            sleep_quality: parseInt(document.querySelector('input[name="sleep_quality"]:checked')?.value || '3', 10),
+            awakenings: parseInt(document.getElementById('awakenings').value || '0', 10),
+            morning_energy: parseInt(document.getElementById('morning_energy').value || '3', 10),
+            daytime_sleepiness: parseInt(document.getElementById('daytime_sleepiness').value || '3', 10),
+            memo: document.getElementById('memo').value.trim(),
+            submitted_at: new Date().toISOString()
+          };
 
       const ok = await submitForm(data, '아침 일지 저장');
       if (ok) morningForm.reset();
