@@ -22,12 +22,44 @@
     </section>
 
     <section class="card">
-      <p class="eyebrow">오늘 해야 할 일</p>
-      <ul class="check-list">
-        <li>☀️ 아침에는 수면 시간, 기상 시간, 수면 질을 기록하기</li>
-        <li>🌙 저녁에는 카페인, 음주, 운동, 낮잠 기록하기</li>
-        <li>📊 일주일치가 쌓이면 패턴을 요약해서 보기</li>
-      </ul>
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">7일 요약</p>
+          <h2>최근 수면 패턴</h2>
+        </div>
+      </div>
+      <section class="quick-stats">
+        <div class="stat-card">
+          <div class="stat-value" id="avgSleepValue">--</div>
+          <div class="stat-label">평균 수면</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="avgQualityValue">--</div>
+          <div class="stat-label">평균 질</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="avgBedValue">--</div>
+          <div class="stat-label">평균 침대 시간</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="efficiencyValue">--</div>
+          <div class="stat-label">효율성</div>
+        </div>
+      </section>
+      <div class="summary-feedback" id="summaryFeedback">아침과 저녁 기록을 남기면 일주일간의 수면 패턴을 볼 수 있습니다.</div>
+      <div id="trendEmpty" class="helper-text">최근 7일간의 기록이 여기에 나타납니다.</div>
+      <div id="trendList" class="trend-list"></div>
+    </section>
+
+    <section class="card hero-card compact-hero">
+      <p class="eyebrow">CBT-I 가이드</p>
+      <h2>수면 패턴에 규칙성을 주세요</h2>
+      <div class="pillars-grid compact-pillars">
+        <div><strong>기록</strong><span> 무엇이 일어나는지 관찰하세요.</span></div>
+        <div><strong>기상 시간</strong><span> 완벽한 밤을 쫓기보다 일관성을 쌓으세요.</span></div>
+        <div><strong>자극 통제</strong><span> 잠들지 못한다면 잠시 침대를 벗어나세요.</span></div>
+      </div>
+      <p class="helper-text">이 앱은 행동 변화와 패턴 인식을 돕습니다. 의료 진단이나 조언이 아닙니다.</p>
     </section>
 
     <section class="card coaching-card is-hidden" id="patternInsightsCard">

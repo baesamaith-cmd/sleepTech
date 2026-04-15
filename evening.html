@@ -3,122 +3,132 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nod 저녁 체크인</title>
+  <title>저녁 수면 일지 - Nod</title>
   <link rel="stylesheet" href="assets/styles.css">
   <script>window.API_BASE_URL = 'https://sleep-tech-five.vercel.app'</script>
 </head>
 <body>
   <div class="container">
-    <header class="hero compact-hero">
-      <div class="hero-badge">🌙 Evening</div>
-      <h1>오늘 하루가<br>밤의 컨디션에 어떤 영향을 줬나요?</h1>
-      <p class="subtitle">밤 30초, 세 버튼만 누르면 충분합니다.</p>
+    <header class="page-header">
+      <div class="logo">🌙
+      <h1>저녁 수면 일지</h1></div>
+      <p class="subtitle">오늘 밤 수면 압박과 계획을 확인하세요.</p>
     </header>
 
-    <section class="card summary-card is-hidden" id="previousSummaryCard">
-      <p class="eyebrow">바로 직전 기록 요약</p>
-      <p class="summary-copy" id="previousSummaryText"></p>
-    </section>
-
-    <section class="card recommendation-card is-hidden" id="bedtimeRecommendationCard">
-      <p class="eyebrow">오늘의 취침 추천</p>
-      <div class="recommendation-time" id="recommendationTime"></div>
-      <p class="recommendation-reason" id="recommendationReason"></p>
-      <p class="recommendation-tip"><strong>오늘 팁:</strong> <span id="recommendationTip"></span></p>
-      <p class="recommendation-uncertainty" id="recommendationUncertainty"></p>
-    </section>
-
-    <section class="card info-card is-hidden" id="bedtimeInfoCard">
-      <p class="eyebrow">취침 추천 안내</p>
-      <p class="info-message" id="bedtimeInfoMessage"></p>
+    <section class="card recommendation-card is-hidden" id="recommendationCard">
+      <p class="eyebrow">취침 권장 시간</p>
+      <div class="time-display" id="bedtimeWindow">--:-- ~ --:--</div>
+      <p class="recommendation-reason" id="bedtimeReason"></p>
+      <p class="recommendation-tip" id="bedtimeTip"></p>
+      <p class="helper-text" id="confidenceNote"></p>
     </section>
 
     <section class="card">
       <form id="eveningForm">
-        <div class="form-group tight-group">
-            <div class="toggle-row">
-              <label>카페인/알코올</label>
-              <div class="toggle-group">
-                <div class="toggle-option">
-                  <input type="radio" name="caffeine" id="caff_yes" value="yes">
-                  <label for="caff_yes"><span class="toggle-text">있음</span></label>
-                </div>
-                <div class="toggle-option">
-                  <input type="radio" name="caffeine" id="caff_no" value="no" checked>
-                  <label for="caff_no"><span class="toggle-text">없음</span></label>
-                </div>
-              </div>
+        <section class="card">
+          <label for="diary_date" class="eyebrow">날짜</label>
+          <input type="date" id="diary_date" class="input-large">
+        </section>
+
+        <div class="field-grid two-up">
+          <div class="form-group">
+            <label>오후 4시 이후 카페인</label>
+            <div class="toggle-group">
+              <div class="toggle-option"><input type="radio" name="caffeine" id="caffeine_yes" value="yes"><label for="caffeine_yes">예</label></div>
+              <div class="toggle-option"><input type="radio" name="caffeine" id="caffeine_no" value="no" checked><label for="caffeine_no">아니요</label></div>
             </div>
-            <div class="toggle-row">
-              <label>운동</label>
-              <div class="toggle-group">
-                <div class="toggle-option">
-                  <input type="radio" name="exercise" id="exer_yes" value="yes">
-                  <label for="exer_yes"><span class="toggle-text">있음</span></label>
-                </div>
-                <div class="toggle-option">
-                  <input type="radio" name="exercise" id="exer_no" value="no" checked>
-                  <label for="exer_no"><span class="toggle-text">없음</span></label>
-                </div>
-              </div>
+          </div>
+          <div class="form-group">
+            <label>음주</label>
+            <div class="toggle-group" id="alcohol_group">
+              <div class="toggle-option"><input type="radio" name="alcohol" id="alcohol_yes" value="yes"><label for="alcohol_yes">예</label></div>
+              <div class="toggle-option"><input type="radio" name="alcohol" id="alcohol_no" value="no" checked><label for="alcohol_no">아니요</label></div>
             </div>
-            <div class="toggle-row">
-              <label>낮잠</label>
-              <div class="toggle-group">
-                <div class="toggle-option">
-                  <input type="radio" name="nap" id="nap_yes" value="yes">
-                  <label for="nap_yes"><span class="toggle-text">있음</span></label>
-                </div>
-                <div class="toggle-option">
-                  <input type="radio" name="nap" id="nap_no" value="no" checked>
-                  <label for="nap_no"><span class="toggle-text">없음</span></label>
-                </div>
-              </div>
+            <div class="rating-group compact-rating" id="alcohol_amount" style="margin-top: 8px; display: none;">
+              <div class="rating-option"><input type="radio" name="alcohol_amount" id="alc_high" value="high"><label for="alc_high"><span>많이</span></label></div>
+              <div class="rating-option"><input type="radio" name="alcohol_amount" id="alc_moderate" value="moderate" checked><label for="alc_moderate"><span>보통</span></label></div>
+              <div class="rating-option"><input type="radio" name="alcohol_amount" id="alc_light" value="light"><label for="alc_light"><span>조금</span></label></div>
             </div>
+          </div>
         </div>
 
-        <div class="optional-section">
-          <details>
-            <summary>메모 남기기 (선택)</summary>
-            <div class="form-group">
-              <label for="stress_or_condition">컨디션</label>
-              <input type="text" id="stress_or_condition" placeholder="스트레스나 컨디션">
+        <div class="field-grid two-up">
+          <div class="form-group">
+            <label>오늘 운동</label>
+            <div class="toggle-group">
+              <div class="toggle-option"><input type="radio" name="exercise" id="exercise_yes" value="yes"><label for="exercise_yes">예</label></div>
+              <div class="toggle-option"><input type="radio" name="exercise" id="exercise_no" value="no" checked><label for="exercise_no">아니요</label></div>
             </div>
-            <div class="form-group">
-              <label for="expected_bedtime">예상 취침</label>
-              <input type="time" id="expected_bedtime">
+          </div>
+          <div class="form-group">
+            <label>오늘 낮잠</label>
+            <div class="toggle-group">
+              <div class="toggle-option"><input type="radio" name="nap" id="nap_yes" value="yes"><label for="nap_yes">예</label></div>
+              <div class="toggle-option"><input type="radio" name="nap" id="nap_no" value="no" checked><label for="nap_no">아니요</label></div>
             </div>
-            <div class="form-group">
-              <div class="label-row">
-                <label for="memo">메모</label>
-                <button type="button" class="voice-btn" data-voice-target="memo">🎤</button>
-              </div>
-              <textarea id="memo" placeholder="필요한 경우"></textarea>
-            </div>
-          </details>
+            <input type="number" id="nap_duration" class="input-large" placeholder="낮잠 시간(분)" style="margin-top: 8px; display: none;" min="5" step="5" value="15">
+          </div>
         </div>
 
-        <button type="submit" class="btn" id="submitBtn">저녁 기록 저장하기</button>
+        <div class="form-group">
+          <div class="label-row">
+            <label for="stress_or_condition">스트레스 및 컨디션</label>
+            <button type="button" class="voice-btn" data-voice-target="stress_or_condition">🎤 음성 입력</button>
+          </div>
+          <input type="text" id="stress_or_condition" class="input-large" placeholder="스트레스, 여행, 몸 상태 등">
+        </div>
+
+        <div class="form-group">
+          <div class="label-row">
+            <label for="memo">메모</label>
+            <button type="button" class="voice-btn" data-voice-target="memo">🎤 음성 입력</button>
+          </div>
+          <textarea id="memo" placeholder="오늘 밤 수면에 영향을 줄 만한 일이 있나요?"></textarea>
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">저녁 일지 저장</button>
       </form>
 
       <div id="message" class="message"></div>
     </section>
 
-    <section class="card muted-card">
-      <p class="eyebrow">오늘 돌아보기</p>
-      <p class="helper-text">카페인, 운동, 낮잠, 스트레스 메모가 쌓이면 나중에 취침 패턴과 함께 보기 쉬워집니다.</p>
-    </section>
-
     <div class="nav-links">
-      <a href="index.html">🏠 홈으로</a>
-      <a href="morning.html">☀️ 아침 기록</a>
+      <a href="index.html">🏠 홈</a>
+      <a href="morning.html">☀️ 아침</a>
     </div>
   </div>
 
   <footer>
-    <p>이 기록은 웰니스 루틴 정리를 위한 것이며, 의료적 판단을 대신하지 않습니다.</p>
+    <p>일지는 나를 평가하는 도구가 아니라 패턴을 발견하는 도구입니다.</p>
   </footer>
 
-  <script src="assets/app.js"></script>
-</body>
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const today = new Date();
+          today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+          document.getElementById('diary_date').value = today.toISOString().split('T')[0];
+          const napYes = document.getElementById('nap_yes');
+          const napNo = document.getElementById('nap_no');
+          const napDuration = document.getElementById('nap_duration');
+          
+          [napYes, napNo].forEach(radio => {
+            radio.addEventListener('change', () => {
+              napDuration.style.display = napYes.checked ? 'block' : 'none';
+            });
+          });
+
+          const alcoholYes = document.getElementById('alcohol_yes');
+          const alcoholNo = document.getElementById('alcohol_no');
+          const alcoholAmount = document.getElementById('alcohol_amount');
+
+          [alcoholYes, alcoholNo].forEach(radio => {
+            radio.addEventListener('change', () => {
+              alcoholAmount.style.display = alcoholYes.checked ? 'block' : 'none';
+            });
+          });
+        });
+      </script>
+      <script src="assets/app.js"></script>
+    </body>
 </html>
+

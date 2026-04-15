@@ -638,10 +638,10 @@ body.theme-morning .summary-copy {
     grid-template-columns: repeat(5, 1fr);
   }
 
-  .compact-rating .rating-option label {
-    min-height: 52px;
-    padding: 8px 4px;
-  }
+.compact-rating .rating-option label {
+    min-height: 58px;
+    padding: 6px 4px;
+}
 
   .compact-rating .rating-option label span {
     display: none;
@@ -710,12 +710,12 @@ body.theme-morning .summary-copy {
     color: #9890b8;
   }
 
-body.theme-morning .toggle-row {
-  background: rgba(28, 24, 48, 0.88);
-  border-color: rgba(255, 200, 130, 0.1);
-}
-
-  body.theme-morning .toggle-row label {
-    color: #c8c4e4;
-  }
+.input-large {
+  font-size: 1rem;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  width: 100%;
+  background: rgba(10, 15, 30, 0.72);
+  color: var(--text-primary);
 }
