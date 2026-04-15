@@ -8,9 +8,9 @@ export default async function handler(req, res) {
   addCors(res);
   if (req.method === 'OPTIONS') return res.status(200).end();
   
-  if (req.headers['x-app-secret'] !== process.env.APP_SECRET) {
-    return res.status(401).json({ error: 'Unauthorized' });
-  }
+  // if (req.headers['x-app-secret'] !== process.env.APP_SECRET) {
+  //   return res.status(401).json({ error: 'Unauthorized' });
+  // }
 
   if (req.method !== 'GET') {
 

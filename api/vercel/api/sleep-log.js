@@ -12,19 +12,14 @@ function validateScale(value, field) {
 
 function validateMorning(data) {
   const errors = [];
-  // Validate optional time fields
-  for (const field of ['time_in_bed', 'lights_out_time', 'final_wake_time', 'out_of_bed_time', 'bedtime', 'wake_time']) {
-    if (data[field] && !isTime(data[field])) errors.push(`${field} must be HH:MM`);
+  if (!isBlank(data.sleep_time) && (typeof data.sleep_time !== 'number' || data.sleep_time < 0)) {
+    errors.push('sleep_time must be a non-negative number');
   }
-
-  if (!isBlank(data.sleep_onset_latency) && (!Number.isInteger(data.sleep_onset_latency) || data.sleep_onset_latency < 0)) {
-    errors.push('sleep_onset_latency must be a non-negative integer');
+  if (!isBlank(data.wake_time) && !isTime(data.wake_time)) {
+    errors.push('wake_time must be HH:MM');
   }
   if (!isBlank(data.awakenings) && (!Number.isInteger(data.awakenings) || data.awakenings < 0)) {
     errors.push('awakenings must be a non-negative integer');
-  }
-  if (!isBlank(data.total_awake_time) && (!Number.isInteger(data.total_awake_time) || data.total_awake_time < 0)) {
-    errors.push('total_awake_time must be a non-negative integer');
   }
 
   if (!isBlank(data.sleep_quality)) {

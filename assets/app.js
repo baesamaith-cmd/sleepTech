@@ -237,26 +237,18 @@ document.addEventListener('DOMContentLoaded', () => {
     morningForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const data = {
-        type: 'morning',
-        date: document.getElementById('diary_date').value,
-        total_sleep_time: parseFloat(document.getElementById('estimated_total_sleep_time').value),
-        sleep_quality: parseInt(document.querySelector('input[name="sleep_quality"]:checked')?.value || '3', 10),
-        awakenings: parseInt(document.getElementById('awakenings').value || '0', 10),
-        morning_energy: parseInt(document.getElementById('morning_energy').value || '3', 10),
-        memo: document.getElementById('memo').value.trim(),
-        
-        // optional detailed fields
-        time_in_bed: document.getElementById('time_in_bed').value || null,
-        lights_out_time: document.getElementById('lights_out_time').value || null,
-        sleep_onset_latency: parseInt(document.getElementById('sleep_onset_latency').value || '0', 10),
-        total_awake_time: parseInt(document.getElementById('total_awake_time').value || '0', 10),
-        final_wake_time: document.getElementById('final_wake_time').value || null,
-        out_of_bed_time: document.getElementById('out_of_bed_time').value || null,
-        daytime_sleepiness: parseInt(document.getElementById('daytime_sleepiness').value || '3', 10),
-        
-        submitted_at: new Date().toISOString()
-      };
+        const data = {
+          type: 'morning',
+          date: document.getElementById('diary_date').value,
+          sleep_time: parseFloat(document.getElementById('sleep_time').value),
+          wake_time: document.getElementById('wake_time').value,
+          sleep_quality: parseInt(document.querySelector('input[name="sleep_quality"]:checked')?.value || '3', 10),
+          awakenings: parseInt(document.getElementById('awakenings').value || '0', 10),
+          morning_energy: parseInt(document.getElementById('morning_energy').value || '3', 10),
+          daytime_sleepiness: parseInt(document.getElementById('daytime_sleepiness').value || '3', 10),
+          memo: document.getElementById('memo').value.trim(),
+          submitted_at: new Date().toISOString()
+        };
 
       const ok = await submitForm(data, '아침 일지 저장');
       if (ok) morningForm.reset();
