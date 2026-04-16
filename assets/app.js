@@ -207,8 +207,12 @@ async function loadSummaryStats() {
 
   try {
     const response = await fetch(`${API_BASE}/api/summary-stats`);
-    if (!response.ok) return;
+    if (!response.ok) {
+      console.error('Failed to fetch summary stats:', response.status);
+      return;
+    }
     const stats = await response.json();
+    console.log('API Stats Response:', stats);
 
     if (stats.avgSleep) avgSleep.textContent = `${stats.avgSleep}시간`;
     if (stats.avgQuality) avgQuality.textContent = `${stats.avgQuality}/5`;

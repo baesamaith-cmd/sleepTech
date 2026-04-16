@@ -45,12 +45,16 @@ export default async function handler(req, res) {
     let sleepCount = 0;
     let totalQuality = 0;
     let qualityCount = 0;
-    let totalBed = 0; // Assuming bed_time or time_in_bed
-    let bedCount = 0;
     let totalEfficiency = 0; // Based on quality * 20 (simple approximation)
     let efficiencyCount = 0;
+    let dayCount = 0;
 
     results.forEach(day => {
+      // Any day with an entry (morning or evening) is considered "stored data"
+      if (day.entries && (day.entries.morning || day.entries.evening)) {
+        dayCount++;
+      }
+      
       const morning = day.entries?.morning;
       if (morning) {
         if (morning.total_sleep_time) {
@@ -70,7 +74,7 @@ export default async function handler(req, res) {
       avgSleep: sleepCount > 0 ? (totalSleep / sleepCount).toFixed(1) : null,
       avgQuality: qualityCount > 0 ? (totalQuality / qualityCount).toFixed(1) : null,
       avgEfficiency: efficiencyCount > 0 ? (totalEfficiency / efficiencyCount).toFixed(0) : null,
-      count: sleepCount
+      count: dayCount
     });
 
   } catch (error) {
