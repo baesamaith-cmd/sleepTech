@@ -221,8 +221,8 @@ async function loadSummaryStats() {
     }
     
     const summaryEyebrow = document.getElementById('summaryEyebrow');
-    if (summaryEyebrow && stats.count !== undefined) {
-      summaryEyebrow.textContent = `최근 ${stats.count}일 요약`;
+    if (summaryEyebrow) {
+      summaryEyebrow.textContent = stats.count !== undefined ? `최근 ${stats.count}일 요약` : '최근 요약';
     }
   } catch (err) {
     console.error(err);
