@@ -218,15 +218,17 @@ async function loadSummaryStats() {
     if (stats.avgQuality) avgQuality.textContent = `${stats.avgQuality}/5`;
     if (stats.avgEfficiency) avgEfficiency.textContent = `${stats.avgEfficiency}%`;
     
-    if (stats.count >= 3) {
-      feedback.textContent = '최근 일주일간 안정적인 리듬을 보여주고 있어요.';
-    } else if (stats.count > 0) {
-      feedback.textContent = '데이터를 꾸준히 모아주세요. 조금 더 기록이 필요해요!';
+    if (feedback) {
+      if (stats.count >= 3) {
+        feedback.textContent = '최근 일주일간 안정적인 리듬을 보여주고 있어요.';
+      } else if (stats.count > 0) {
+        feedback.textContent = '데이터를 꾸준히 모아주세요. 조금 더 기록이 필요해요!';
+      }
     }
     
     const summaryEyebrow = document.getElementById('summaryEyebrow');
     if (summaryEyebrow) {
-      summaryEyebrow.textContent = stats.count !== undefined ? `최근 ${stats.count}일 요약` : '최근 요약';
+      summaryEyebrow.textContent = (stats.count !== undefined && stats.count !== null) ? `최근 ${stats.count}일 요약` : '최근 요약';
     }
   } catch (err) {
     console.error(err);
