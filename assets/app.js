@@ -200,11 +200,6 @@ function setupVoiceInputs() {
 }
 
 async function loadSummaryStats() {
-  const avgSleep = document.getElementById('avgSleepValue');
-  const avgQuality = document.getElementById('avgQualityValue');
-  const avgEfficiency = document.getElementById('efficiencyValue');
-  const feedback = document.getElementById('summaryFeedback');
-
   try {
     const response = await fetch(`${API_BASE}/api/summary-stats`);
     if (!response.ok) {
@@ -214,9 +209,15 @@ async function loadSummaryStats() {
     const stats = await response.json();
     console.log('API Stats Response:', stats);
 
-    if (stats.avgSleep) avgSleep.textContent = `${stats.avgSleep}시간`;
-    if (stats.avgQuality) avgQuality.textContent = `${stats.avgQuality}/5`;
-    if (stats.avgEfficiency) avgEfficiency.textContent = `${stats.avgEfficiency}%`;
+    const avgSleep = document.getElementById('avgSleepValue');
+    const avgQuality = document.getElementById('avgQualityValue');
+    const avgEfficiency = document.getElementById('efficiencyValue');
+    const feedback = document.getElementById('summaryFeedback');
+    const summaryEyebrow = document.getElementById('summaryEyebrow');
+
+    if (avgSleep && stats.avgSleep !== undefined) avgSleep.textContent = `${stats.avgSleep}시간`;
+    if (avgQuality && stats.avgQuality !== undefined) avgQuality.textContent = `${stats.avgQuality}/5`;
+    if (avgEfficiency && stats.avgEfficiency !== undefined) avgEfficiency.textContent = `${stats.avgEfficiency}%`;
     
     if (feedback) {
       if (stats.count >= 3) {
@@ -226,12 +227,11 @@ async function loadSummaryStats() {
       }
     }
     
-    const summaryEyebrow = document.getElementById('summaryEyebrow');
     if (summaryEyebrow) {
       summaryEyebrow.textContent = (stats.count !== undefined && stats.count !== null) ? `최근 ${stats.count}일 요약` : '최근 요약';
     }
   } catch (err) {
-    console.error(err);
+    console.error('Error loading summary stats:', err);
   }
 }
 
