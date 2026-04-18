@@ -24,7 +24,9 @@
       <form id="morningForm">
         <div class="field-grid two-up">
           <div class="form-group">
-            <label for="diary_date">날짜</label>
+            <div class="label-row">
+              <label for="diary_date">날짜</label>
+            </div>
             <input type="date" id="diary_date" class="input-large" required>
           </div>
         </div>
@@ -66,18 +68,20 @@
 
         <div class="field-grid two-up">
           <div class="form-group">
-            <label for="morning_energy">아침 컨디션 (1-5)</label>
-            <select id="morning_energy">
-              <option value="1">1, 기운 없음</option>
-              <option value="2">2</option>
-              <option value="3" selected>3</option>
-              <option value="4">4</option>
-              <option value="5">5, 아주 개운함</option>
-            </select>
+            <label>아침 컨디션 (1-5)</label>
+            <div class="rating-group compact-rating">
+              <div class="rating-option"><input type="radio" name="morning_energy" id="me1" value="1"><label for="me1">1</label></div>
+              <div class="rating-option"><input type="radio" name="morning_energy" id="me2" value="2"><label for="me2">2</label></div>
+              <div class="rating-option"><input type="radio" name="morning_energy" id="me3" value="3" checked><label for="me3">3</label></div>
+              <div class="rating-option"><input type="radio" name="morning_energy" id="me4" value="4"><label for="me4">4</label></div>
+              <div class="rating-option"><input type="radio" name="morning_energy" id="me5" value="5"><label for="me5">5</label></div>
+            </div>
           </div>
           <div class="form-group">
-            <label for="memo">메모</label>
-            <button type="button" class="btn-voice" data-voice-target="memo">🎤 음성 입력</button>
+            <div class="label-row">
+              <label for="memo">메모</label>
+              <button type="button" class="voice-btn" data-voice-target="memo">🎤 음성 입력</button>
+            </div>
             <textarea id="memo" placeholder="기록할 만한 내용이 있나요?"></textarea>
           </div>
         </div>

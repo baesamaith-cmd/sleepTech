@@ -255,7 +255,7 @@ document.addEventListener('DOMContentLoaded', () => {
             wake_time: document.getElementById('wake_time').value,
             sleep_quality: parseInt(document.querySelector('input[name="sleep_quality"]:checked')?.value || '3', 10),
             awakenings: parseInt(document.getElementById('awakenings').value || '0', 10),
-            morning_energy: parseInt(document.getElementById('morning_energy').value || '3', 10),
+            morning_energy: parseInt(document.querySelector('input[name="morning_energy"]:checked')?.value || '3', 10),
             daytime_sleepiness: parseInt(document.getElementById('daytime_sleepiness').value || '3', 10),
             memo: document.getElementById('memo').value.trim(),
             submitted_at: new Date().toISOString()

@@ -25,8 +25,12 @@
     <section class="card">
       <form id="eveningForm">
         <section class="card">
-          <label for="diary_date" class="eyebrow">날짜</label>
-          <input type="date" id="diary_date" class="input-large">
+          <div class="form-group">
+            <div class="label-row">
+              <label for="diary_date">날짜</label>
+            </div>
+            <input type="date" id="diary_date" class="input-large">
+          </div>
         </section>
 
         <div class="field-grid two-up">
@@ -69,10 +73,14 @@
           </div>
         </div>
 
-        <section class="card" style="padding: 10px 15px; border-style: dashed;">
-          <label for="memo" class="eyebrow" style="margin-bottom: 5px;">메모 (선택 사항)</label>
-          <button type="button" class="btn-voice" data-voice-target="memo" style="margin-bottom: 8px;">🎤 음성 입력</button>
-          <textarea id="memo" placeholder="오늘 밤 수면에 영향을 줄 만한 일이 있나요?" style="min-height: 80px;"></textarea>
+        <section class="card">
+          <div class="form-group">
+            <div class="label-row">
+              <label for="memo">메모 (선택 사항)</label>
+              <button type="button" class="voice-btn" data-voice-target="memo">🎤 음성 입력</button>
+            </div>
+            <textarea id="memo" placeholder="오늘 밤 수면에 영향을 줄 만한 일이 있나요?"></textarea>
+          </div>
         </section>
 
         <button type="submit" class="btn" id="submitBtn">저녁 일지 저장</button>
